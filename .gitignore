@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+wheelhouse/
+
+# 허브 데이터·설정 (개인 문서와 토큰이 들어갈 수 있음)
+.env
+hub/data/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+kb.json
+bench-*.jsonl
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+clients/ios/build/
+# Package.resolved는 커밋합니다 (SwiftPM 의존성 버전 고정)
+
+# Android / Gradle
+.gradle/
+local.properties
+clients/android/build/
+clients/android/app/build/
+*.apk
+*.aab
+.idea/
+*.iml
+
+# 에디터·도구
+.vscode/
+.claude/

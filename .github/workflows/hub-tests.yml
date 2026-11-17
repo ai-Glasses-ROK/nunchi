@@ -1,0 +1,28 @@
+# 허브 단위·API 테스트 (가짜 LLM/임베딩/STT/TTS를 쓰므로 Ollama 없이 돎)
+name: hub-tests
+
+on:
+  push:
+    paths: ["hub/**", "examples/**", ".github/workflows/hub-tests.yml"]
+  pull_request:
+    paths: ["hub/**", "examples/**", ".github/workflows/hub-tests.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12"]
+    defaults:
+      run:
+        working-directory: hub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pytest -q

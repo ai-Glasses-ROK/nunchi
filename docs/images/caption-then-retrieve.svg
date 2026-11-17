@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 392" width="960" height="392" role="img" aria-labelledby="title desc">
+  <title id="title">사진 질문: 캡션 → 검색 → 답</title>
+  <desc id="desc">안경 카메라 사진과 "이게 뭐야?" 질문이 들어오면, 비전 모델이 사진 속 글자와 사물을 쉼표로 나열한 캡션을 만들고, 질문과 캡션으로 문서를 검색해 '경고등과 고장 코드' 조각을 찾은 뒤, 사진과 찾은 문서로 답을 만들어 안경 스피커로 읽어 줍니다. 캡션 없이 검색하면 질문에 검색어가 없어 엉뚱한 조각을 찾습니다.</desc>
+  <style>
+    .bg { fill: #ffffff; stroke: #d0d7de; }
+    .card { fill: #f6f8fa; stroke: #d0d7de; }
+    .hl { fill: #ddf4ff; stroke: #54aeff; }
+    .ok { fill: #dafbe1; stroke: #4ac26b; }
+    .bad { fill: #fff5f5; stroke: #ff8182; }
+    .h { fill: #1f2328; font: 600 15px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .title { fill: #1f2328; font: 700 18px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .b { fill: #1f2328; font: 13.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .bb { fill: #1f2328; font: 600 13.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .s { fill: #59636e; font: 12.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .m { fill: #0550ae; font: 13px ui-monospace, SFMono-Regular, Menlo, "D2Coding", monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 2; fill: none; }
+    .ah { fill: #8c959f; }
+    .x { stroke: #cf222e; stroke-width: 2.5; stroke-linecap: round; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; stroke: #30363d; }
+      .card { fill: #161b22; stroke: #30363d; }
+      .hl { fill: #0c2d6b; stroke: #1f6feb; }
+      .ok { fill: #0f2e1a; stroke: #2ea043; }
+      .bad { fill: #2d1517; stroke: #da3633; }
+      .h, .title, .b, .bb { fill: #e6edf3; }
+      .s { fill: #9198a1; }
+      .m { fill: #79c0ff; }
+      .arrow { stroke: #6e7681; }
+      .ah { fill: #6e7681; }
+      .x { stroke: #ff7b72; }
+    }
+  </style>
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" class="ah"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="959" height="391" rx="12"/>
+  <text class="title" x="24" y="38">사진 질문은 캡션을 먼저 만들어 검색합니다</text>
+  <text class="s" x="24" y="60">caption-then-retrieve · 실측: 가상 안경의 발전기 계기판 사진, gemma4:e4b</text>
+
+  <!-- 안경 카메라 -->
+  <rect class="card" x="24" y="84" width="176" height="180" rx="10"/>
+  <text class="h" x="40" y="110">안경 카메라</text>
+  <rect x="40" y="124" width="144" height="72" rx="6" fill="#24292f"/>
+  <text x="52" y="144" fill="#d0d7de" font-family="ui-monospace, Menlo, monospace" font-size="11">HG-2000</text>
+  <text x="52" y="182" fill="#ff6b6b" font-family="ui-monospace, Menlo, monospace" font-size="28" font-weight="700">E2</text>
+  <circle cx="158" cy="141" r="6" fill="#ff4d4f"/>
+  <circle cx="174" cy="141" r="6" fill="#f5c518"/>
+  <rect class="hl" x="40" y="210" width="144" height="38" rx="19"/>
+  <text class="bb" x="112" y="234" text-anchor="middle">“이게 뭐야?”</text>
+
+  <path class="arrow" d="M202,174 L224,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ① 캡션 -->
+  <rect class="card" x="228" y="84" width="200" height="180" rx="10"/>
+  <text class="h" x="244" y="110">① 캡션</text>
+  <text class="s" x="244" y="130">비전 모델 · 약 0.3초</text>
+  <text class="s" x="244" y="152">“글자·코드·사물을</text>
+  <text class="s" x="244" y="168">쉼표로 나열해”</text>
+  <rect class="hl" x="244" y="182" width="168" height="66" rx="6"/>
+  <text class="m" x="256" y="204">HG-2000, E2,</text>
+  <text class="m" x="256" y="221">발전기 계기판,</text>
+  <text class="m" x="256" y="238">빨간 불, 노란 불</text>
+
+  <path class="arrow" d="M430,174 L452,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ② 검색 -->
+  <rect class="card" x="456" y="84" width="200" height="180" rx="10"/>
+  <text class="h" x="472" y="110">② 검색</text>
+  <text class="s" x="472" y="130">질문 + 캡션으로</text>
+  <text class="s" x="472" y="147">BM25 + 임베딩 (RRF)</text>
+  <rect class="ok" x="472" y="162" width="168" height="86" rx="6"/>
+  <text class="s" x="484" y="182">1위 조각</text>
+  <text class="bb" x="484" y="202">경고등과 고장 코드</text>
+  <text class="s" x="484" y="222">E2 = 엔진 과열 →</text>
+  <text class="s" x="484" y="239">끄고 30분 식히기…</text>
+
+  <path class="arrow" d="M658,174 L680,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ③ 답 -->
+  <rect class="card" x="684" y="84" width="252" height="180" rx="10"/>
+  <text class="h" x="700" y="110">③ 답</text>
+  <text class="s" x="700" y="130">사진 + 찾은 문서 → LLM</text>
+  <rect class="hl" x="700" y="142" width="220" height="94" rx="8"/>
+  <text class="b" x="712" y="164">“HG-2000 발전기에</text>
+  <text class="b" x="712" y="183">E2 코드가 떠 있어요.</text>
+  <text class="b" x="712" y="202">엔진 과열이니 끄고</text>
+  <text class="b" x="712" y="221">30분 식혀 주세요.”</text>
+  <text class="s" x="700" y="254">→ 안경 스피커로 읽어 줌</text>
+
+  <!-- 캡션 없이 -->
+  <rect class="bad" x="24" y="284" width="912" height="64" rx="10"/>
+  <path class="x" d="M44,302 L58,316 M58,302 L44,316"/>
+  <text class="bb" x="70" y="314">캡션 없이 검색하면</text>
+  <text class="b" x="200" y="314">“이게 뭐야?”와 겹치는 단어가 없어, 정답 조각(경고등과 고장 코드)이 상위 4개에 들지 못합니다.</text>
+  <text class="s" x="70" y="336">캡션을 붙이면 같은 조각이 1위로 올라옵니다 (키워드 점수 0 → 10.1). 사진만으로 충분한 질문이 대부분이면 NUNCHI_VISION_CAPTION=false</text>
+
+  <text class="s" x="24" y="374">구현: hub/nunchi/pipeline.py (caption 이벤트) · 캡션 지시문: hub/nunchi/rag/prompt.py (CAPTION_PROMPT)</text>
+</svg>

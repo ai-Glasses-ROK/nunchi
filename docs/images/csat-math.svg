@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 522" width="960" height="522" role="img" aria-labelledby="t d">
+<title id="t">수능 수학 로컬 vs 클라우드 정답률</title>
+<desc id="d">로컬 모델과 공개된 클라우드 결과의 수학 정답률 막대그래프. 값은 막대 끝과 문서의 표에 있습니다.</desc>
+<style>
+  .surface { fill: #fcfcfb; }
+  .ink { fill: #0b0b0b; } .ink2 { fill: #52514e; } .muted { fill: #898781; }
+  .grid { stroke: #e1e0d9; stroke-width: 1; } .base { stroke: #c3c2b7; stroke-width: 1; }
+  .s1 { fill: #2a78d6; } .s2 { fill: #eb6834; } .ref { fill: #b9b8b0; }
+  text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Segoe UI', sans-serif; }
+  @media (prefers-color-scheme: dark) {
+    .surface { fill: #1a1a19; }
+    .ink { fill: #f0efec; } .ink2 { fill: #c3c2b7; } .muted { fill: #898781; }
+    .grid { stroke: #2c2c2a; } .base { stroke: #383835; }
+    .s1 { fill: #3987e5; } .s2 { fill: #d95926; } .ref { fill: #5a5955; }
+  }
+</style>
+<rect class="surface" x="0" y="0" width="960" height="522" rx="12"/>
+<text class="ink" x="24" y="38" font-size="18" font-weight="700">수능 수학: 이미지로 풀 때 로컬 소형 모델과 클라우드의 거리</text>
+<text class="ink2" x="24" y="60" font-size="12.5">2026학년도 수학 · 정답률(%) · 문항 범위와 입력 방식이 달라 참고용 비교입니다 (아래 주석)</text>
+<line class="base" x1="284.0" y1="114" x2="284.0" y2="460"/>
+<text class="muted" x="284.0" y="476" font-size="11" text-anchor="middle">0%</text>
+<line class="grid" x1="424.0" y1="114" x2="424.0" y2="460"/>
+<text class="muted" x="424.0" y="476" font-size="11" text-anchor="middle">25%</text>
+<line class="grid" x1="564.0" y1="114" x2="564.0" y2="460"/>
+<text class="muted" x="564.0" y="476" font-size="11" text-anchor="middle">50%</text>
+<line class="grid" x1="704.0" y1="114" x2="704.0" y2="460"/>
+<text class="muted" x="704.0" y="476" font-size="11" text-anchor="middle">75%</text>
+<line class="grid" x1="844.0" y1="114" x2="844.0" y2="460"/>
+<text class="muted" x="844.0" y="476" font-size="11" text-anchor="middle">100%</text>
+<text class="ink" x="24" y="110" font-size="13" font-weight="600">공개 결과 · 클라우드·대형 (Pyeon et al., 2025 · 46문항)</text>
+<text class="ink" x="24" y="134" font-size="12.5">GPT-5 Codex · 이미지</text>
+<path class="ref" d="M284.0,123.0 h556.0 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-556.0 z"/>
+<text class="ink2" x="850.0" y="134" font-size="11.5">100.0</text>
+<text class="ink" x="24" y="164" font-size="12.5">GPT-5 · 이미지</text>
+<path class="ref" d="M284.0,153.0 h543.7 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-543.7 z"/>
+<text class="ink2" x="837.7" y="164" font-size="11.5">97.8</text>
+<text class="ink" x="24" y="194" font-size="12.5">gpt-oss-20B · 텍스트(사람이 옮김)</text>
+<path class="ref" d="M284.0,183.0 h531.9 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-531.9 z"/>
+<text class="ink2" x="825.9" y="194" font-size="11.5">95.7</text>
+<text class="ink" x="24" y="224" font-size="12.5">Gemini 2.5 Pro · 이미지</text>
+<path class="ref" d="M284.0,213.0 h519.6 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-519.6 z"/>
+<text class="ink2" x="813.6" y="224" font-size="11.5">93.5</text>
+<text class="ink" x="24" y="254" font-size="12.5">GPT-5-nano · 이미지</text>
+<path class="ref" d="M284.0,243.0 h373.4 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-373.4 z"/>
+<text class="ink2" x="667.4" y="254" font-size="11.5">67.4</text>
+<text class="ink" x="24" y="294" font-size="13" font-weight="600">이 연구 · 로컬 노트북 하나 (공통 22문항)</text>
+<text class="ink" x="24" y="318" font-size="12.5">gpt-oss:20b · 이미지→OCR→풀이</text>
+<path class="s1" d="M284.0,307.0 h403.3 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-403.3 z"/>
+<text class="ink2" x="697.3" y="318" font-size="11.5">73% (16/22)</text>
+<text class="ink" x="24" y="348" font-size="12.5">gemma4:e4b · 이미지→OCR→풀이</text>
+<path class="s1" d="M284.0,337.0 h428.7 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-428.7 z"/>
+<text class="ink2" x="722.7" y="348" font-size="11.5">77% (17/22)</text>
+<text class="ink" x="24" y="378" font-size="12.5">gemma4:e4b · 이미지 · 사고 켬</text>
+<path class="s1" d="M284.0,367.0 h377.8 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-377.8 z"/>
+<text class="ink2" x="671.8" y="378" font-size="11.5">68% (15/22)</text>
+<text class="ink" x="24" y="408" font-size="12.5">gemma4:e4b · 이미지</text>
+<path class="s1" d="M284.0,397.0 h276.0 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-276.0 z"/>
+<text class="ink2" x="570.0" y="408" font-size="11.5">50% (11/22)</text>
+<text class="ink" x="24" y="438" font-size="12.5">gemma4:e2b · 이미지</text>
+<path class="s1" d="M284.0,427.0 h174.2 a4,4 0 0 1 4,4 v6.0 a4,4 0 0 1 -4,4 h-174.2 z"/>
+<text class="ink2" x="468.2" y="438" font-size="11.5">32% (7/22)</text>
+<text class="muted" x="24" y="492" font-size="11.5">공개 결과: arXiv:2511.18649 표 6, 한국어 지시문, 공통+선택 3과목 46문항, 100점 환산. 이 연구: 공통 1~22번, 정답 문항 수 비율.</text>
+<text class="muted" x="24" y="508" font-size="11.5">OCR: gemma4:e4b가 문항 이미지를 글(LaTeX)로 옮기고 풀이 모델이 그 글만 봄. 모든 로컬 실행은 같은 노트북(M5 Pro 24GB)의 Ollama.</text>
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 338" width="960" height="338" role="img" aria-labelledby="t d">
+<title id="t">수능 국어·영어 RAG 조건별 검색 적중률과 정답률</title>
+<desc id="d">조건별 검색 적중률과 정답률 막대그래프. 값은 문서의 표에 있습니다.</desc>
+<style>
+  .surface { fill: #fcfcfb; }
+  .ink { fill: #0b0b0b; } .ink2 { fill: #52514e; } .muted { fill: #898781; }
+  .grid { stroke: #e1e0d9; stroke-width: 1; } .base { stroke: #c3c2b7; stroke-width: 1; }
+  .s1 { fill: #2a78d6; } .s2 { fill: #eb6834; } .ref { fill: #b9b8b0; }
+  text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Segoe UI', sans-serif; }
+  @media (prefers-color-scheme: dark) {
+    .surface { fill: #1a1a19; }
+    .ink { fill: #f0efec; } .ink2 { fill: #c3c2b7; } .muted { fill: #898781; }
+    .grid { stroke: #2c2c2a; } .base { stroke: #383835; }
+    .s1 { fill: #3987e5; } .s2 { fill: #d95926; } .ref { fill: #5a5955; }
+  }
+</style>
+<rect class="surface" x="0" y="0" width="960" height="338" rx="12"/>
+<text class="ink" x="24" y="38" font-size="18" font-weight="700">수능 국어·영어: 번호로 묻는 RAG의 검색 적중과 정답률</text>
+<text class="ink2" x="24" y="60" font-size="12.5">gemma4:e4b · 질문 "국어 5번 문제 풀어 줘" · 2026학년도 홀수형 국어 34문항, 영어 27문항 · temperature 0</text>
+<rect class="s1" x="790" y="29" width="12" height="12" rx="3"/>
+<text class="ink2" x="808" y="39" font-size="12.5">국어</text>
+<rect class="s2" x="864" y="29" width="12" height="12" rx="3"/>
+<text class="ink2" x="882" y="39" font-size="12.5">영어</text>
+<text class="ink" x="202" y="90" font-size="13.5" font-weight="600">검색 적중률 (정답 문항이 검색 결과에 있었나)</text>
+<line class="base" x1="202.0" y1="104" x2="202.0" y2="282"/>
+<text class="muted" x="202.0" y="298" font-size="11" text-anchor="middle">0%</text>
+<line class="grid" x1="284.5" y1="104" x2="284.5" y2="282"/>
+<text class="muted" x="284.5" y="298" font-size="11" text-anchor="middle">25%</text>
+<line class="grid" x1="367.0" y1="104" x2="367.0" y2="282"/>
+<text class="muted" x="367.0" y="298" font-size="11" text-anchor="middle">50%</text>
+<line class="grid" x1="449.5" y1="104" x2="449.5" y2="282"/>
+<text class="muted" x="449.5" y="298" font-size="11" text-anchor="middle">75%</text>
+<line class="grid" x1="532.0" y1="104" x2="532.0" y2="282"/>
+<text class="muted" x="532.0" y="298" font-size="11" text-anchor="middle">100%</text>
+<text class="ink" x="588" y="90" font-size="13.5" font-weight="600">정답률</text>
+<line class="base" x1="588.0" y1="104" x2="588.0" y2="282"/>
+<text class="muted" x="588.0" y="298" font-size="11" text-anchor="middle">0%</text>
+<line class="grid" x1="670.5" y1="104" x2="670.5" y2="282"/>
+<text class="muted" x="670.5" y="298" font-size="11" text-anchor="middle">25%</text>
+<line class="grid" x1="753.0" y1="104" x2="753.0" y2="282"/>
+<text class="muted" x="753.0" y="298" font-size="11" text-anchor="middle">50%</text>
+<line class="grid" x1="835.5" y1="104" x2="835.5" y2="282"/>
+<text class="muted" x="835.5" y="298" font-size="11" text-anchor="middle">75%</text>
+<line class="grid" x1="918.0" y1="104" x2="918.0" y2="282"/>
+<text class="muted" x="918.0" y="298" font-size="11" text-anchor="middle">100%</text>
+<text class="ink" x="24" y="130" font-size="13">원문 RAG</text>
+<path class="s1" d="M202.0,114.0 h122.2 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-122.2 z"/>
+<path class="s2" d="M202.0,128.0 h81.6 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-81.6 z"/>
+<path class="s1" d="M588.0,114.0 h34.8 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-34.8 z"/>
+<path class="s2" d="M588.0,128.0 h44.9 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-44.9 z"/>
+<text class="ink" x="24" y="174" font-size="13">문항 번호를 제목으로</text>
+<path class="s1" d="M202.0,158.0 h209.5 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-209.5 z"/>
+<path class="s2" d="M202.0,172.0 h289.3 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-289.3 z"/>
+<path class="s1" d="M588.0,158.0 h54.2 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-54.2 z"/>
+<path class="s2" d="M588.0,172.0 h154.9 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-154.9 z"/>
+<text class="ink" x="24" y="218" font-size="13">+ 번호 조회 (Nunchi)</text>
+<path class="s1" d="M202.0,202.0 h326.0 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-326.0 z"/>
+<text class="ink2" x="538.0" y="212" font-size="11.5">100%</text>
+<path class="s2" d="M202.0,216.0 h326.0 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-326.0 z"/>
+<text class="ink2" x="538.0" y="226" font-size="11.5">100%</text>
+<path class="s1" d="M588.0,202.0 h199.8 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-199.8 z"/>
+<text class="ink2" x="797.8" y="212" font-size="11.5">62%</text>
+<path class="s2" d="M588.0,216.0 h264.9 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-264.9 z"/>
+<text class="ink2" x="862.9" y="226" font-size="11.5">81%</text>
+<text class="ink" x="24" y="262" font-size="13">문항 직접 제공 (상한)</text>
+<text class="muted" x="208" y="262" font-size="12">해당 없음 (검색 안 함)</text>
+<path class="s1" d="M588.0,246.0 h190.1 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-190.1 z"/>
+<text class="ink2" x="788.1" y="256" font-size="11.5">59%</text>
+<path class="s2" d="M588.0,260.0 h301.6 a4,4 0 0 1 4,4 v4.0 a4,4 0 0 1 -4,4 h-301.6 z"/>
+<text class="ink2" x="899.6" y="270" font-size="11.5">93%</text>
+<text class="muted" x="24" y="322" font-size="11.5">검색 적중: 검색 결과 상위 4개 안에 그 문항의 발문이 있었는지. 번호 조회 = 질문의 “N번”과 같은 번호의 제목을 가진 절을 통째로 가져옴 (hub/nunchi/rag/retriever.py)</text>
+</svg>

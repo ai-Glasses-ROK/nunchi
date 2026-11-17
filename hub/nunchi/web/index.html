@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Nunchi</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="dot" id="statusDot" aria-hidden="true"></span>
+      <div>
+        <h1>Nunchi</h1>
+        <p id="statusText" class="muted">연결 확인 중…</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="설정" aria-expanded="false" aria-controls="settings">⚙︎</button>
+  </header>
+
+  <section id="settings" class="panel" hidden>
+    <h2>설정</h2>
+    <label>접속 토큰 <span class="muted">(NUNCHI_TOKEN을 정했을 때만)</span>
+      <input id="token" type="password" autocomplete="off" placeholder="비워 두면 토큰 없음">
+    </label>
+    <label>답변 읽기
+      <select id="speakMode">
+        <option value="browser">이 기기(브라우저)가 읽기 — 가장 빠름</option>
+        <option value="hub">허브가 만든 음성 재생</option>
+        <option value="off">읽지 않기</option>
+      </select>
+    </label>
+    <label>답변 길이
+      <select id="style">
+        <option value="voice">짧게 (음성용)</option>
+        <option value="text">자세히 (화면용)</option>
+      </select>
+    </label>
+    <div class="row">
+      <button id="resetBtn" class="ghost">대화 초기화</button>
+      <button id="kbBtn" class="ghost">지식베이스</button>
+    </div>
+    <p class="muted small" id="secureNote"></p>
+  </section>
+
+  <section id="kb" class="panel" hidden>
+    <h2>지식베이스</h2>
+    <p class="muted small" id="kbStats">불러오는 중…</p>
+    <ul id="kbList" class="kb-list"></ul>
+    <label class="file-btn">문서 올리기 (.md .txt .pdf .docx .html .csv)
+      <input id="kbFiles" type="file" multiple accept=".md,.markdown,.txt,.pdf,.docx,.html,.htm,.csv">
+    </label>
+  </section>
+
+  <main id="log" class="log" aria-live="polite">
+    <div class="msg hub intro">
+      <p>문서에 있는 내용을 물어보세요. 예: <button class="chip" data-q="캠핑장 체크인은 몇 시부터야?">캠핑장 체크인은 몇 시부터야?</button>
+      <button class="chip" data-q="발전기에 E2 코드가 떴는데 뭐야?">발전기에 E2 코드가 떴는데 뭐야?</button></p>
+    </div>
+  </main>
+
+  <footer class="composer">
+    <label class="icon-btn photo" aria-label="사진으로 묻기">📷
+      <input id="photo" type="file" accept="image/*" capture="environment" hidden>
+    </label>
+    <form id="askForm" class="ask">
+      <input id="question" type="text" enterkeyhint="send" placeholder="질문을 입력하거나 마이크를 누르세요" autocomplete="off">
+      <button type="submit" class="send" aria-label="보내기">↑</button>
+    </form>
+    <button id="micBtn" class="mic" aria-label="눌러서 말하기" aria-pressed="false">🎙️</button>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

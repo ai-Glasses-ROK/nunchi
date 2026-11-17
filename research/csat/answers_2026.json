@@ -1,0 +1,39 @@
+{
+  "source": "한국교육과정평가원 2026학년도 대학수학능력시험 정답표 (홀수형). 국어·수학은 공통과목, 영어는 읽기(18~45번)만.",
+  "kor": {
+    "1": {"answer": 3, "points": 2}, "2": {"answer": 5, "points": 2}, "3": {"answer": 4, "points": 3},
+    "4": {"answer": 1, "points": 2}, "5": {"answer": 4, "points": 2}, "6": {"answer": 2, "points": 2},
+    "7": {"answer": 5, "points": 2}, "8": {"answer": 3, "points": 3}, "9": {"answer": 5, "points": 2},
+    "10": {"answer": 5, "points": 2}, "11": {"answer": 3, "points": 2}, "12": {"answer": 1, "points": 3},
+    "13": {"answer": 1, "points": 2}, "14": {"answer": 5, "points": 2}, "15": {"answer": 1, "points": 2},
+    "16": {"answer": 2, "points": 2}, "17": {"answer": 3, "points": 3}, "18": {"answer": 2, "points": 2},
+    "19": {"answer": 4, "points": 2}, "20": {"answer": 3, "points": 2}, "21": {"answer": 2, "points": 3},
+    "22": {"answer": 5, "points": 2}, "23": {"answer": 1, "points": 3}, "24": {"answer": 4, "points": 2},
+    "25": {"answer": 4, "points": 2}, "26": {"answer": 2, "points": 2}, "27": {"answer": 5, "points": 2},
+    "28": {"answer": 5, "points": 2}, "29": {"answer": 1, "points": 2}, "30": {"answer": 3, "points": 3},
+    "31": {"answer": 2, "points": 2}, "32": {"answer": 4, "points": 2}, "33": {"answer": 1, "points": 2},
+    "34": {"answer": 3, "points": 3}
+  },
+  "eng": {
+    "18": {"answer": 2, "points": 2}, "19": {"answer": 1, "points": 2}, "20": {"answer": 2, "points": 2},
+    "21": {"answer": 2, "points": 2}, "22": {"answer": 1, "points": 2}, "23": {"answer": 3, "points": 2},
+    "24": {"answer": 2, "points": 3}, "25": {"answer": 4, "points": 2}, "26": {"answer": 3, "points": 2},
+    "27": {"answer": 4, "points": 2}, "28": {"answer": 4, "points": 2}, "29": {"answer": 2, "points": 2},
+    "30": {"answer": 5, "points": 3}, "31": {"answer": 1, "points": 2}, "32": {"answer": 5, "points": 3},
+    "33": {"answer": 4, "points": 2}, "34": {"answer": 3, "points": 3}, "35": {"answer": 4, "points": 2},
+    "36": {"answer": 4, "points": 2}, "37": {"answer": 5, "points": 3}, "38": {"answer": 5, "points": 2},
+    "39": {"answer": 3, "points": 3}, "40": {"answer": 3, "points": 2}, "41": {"answer": 2, "points": 3},
+    "42": {"answer": 5, "points": 2}, "43": {"answer": 5, "points": 2}, "44": {"answer": 3, "points": 2},
+    "45": {"answer": 5, "points": 2}
+  },
+  "math": {
+    "1": {"answer": 1, "points": 2}, "2": {"answer": 4, "points": 2}, "3": {"answer": 5, "points": 3},
+    "4": {"answer": 3, "points": 3}, "5": {"answer": 3, "points": 3}, "6": {"answer": 2, "points": 3},
+    "7": {"answer": 5, "points": 3}, "8": {"answer": 1, "points": 3}, "9": {"answer": 4, "points": 4},
+    "10": {"answer": 3, "points": 4}, "11": {"answer": 3, "points": 4}, "12": {"answer": 2, "points": 4},
+    "13": {"answer": 5, "points": 4}, "14": {"answer": 4, "points": 4}, "15": {"answer": 4, "points": 4},
+    "16": {"answer": 9, "points": 3}, "17": {"answer": 16, "points": 3}, "18": {"answer": 12, "points": 3},
+    "19": {"answer": 15, "points": 3}, "20": {"answer": 130, "points": 4}, "21": {"answer": 65, "points": 4},
+    "22": {"answer": 457, "points": 4}
+  }
+}

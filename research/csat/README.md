@@ -1,0 +1,83 @@
+# 수능 실험 (2026학년도 국어·수학·영어)
+
+> ⚠️ **연구·학습용입니다.** 시험장에 스마트 안경·휴대폰 같은 전자기기를 가져가거나 쓰는 것은 부정행위이고, 그 시험이 무효가 됩니다. 이 실험은 "작은 로컬 모델이 한국어 고난도 글을 어디까지 읽고 푸는가", "안경으로 본 종이를 RAG로 어떻게 찾아 쓰는가"를 재기 위한 것입니다.
+
+## 무엇을 재나
+
+안경 시나리오를 다섯 가지 조건으로 나눴습니다.
+
+| 조건 | 모델이 받는 것 | 재는 것 |
+|---|---|---|
+| `oracle` (문항 직접 제공) | 지문+발문+선택지 텍스트 | 모델의 순수 독해·풀이 실력 (상한선) |
+| `rag-naive` | 문제지 PDF 원문을 지식베이스에 넣고 "국어 5번 문제 풀어 줘" | 검색이 문항을 찾을 수 있나 |
+| `rag-structured` | `## 국어 5번 문항` 제목을 붙인 문서 + 같은 질문 | 문서 구조의 효과 |
+| `rag-lookup` | 위 + **번호 조회·절 확장** (허브 기본값) | "N번"을 검색 대신 목차로 찾기 |
+| `vision` (수학) | 문항 이미지 | 안경 카메라로 시험지를 보는 상황 |
+| `ocr` (수학) | 비전 모델이 이미지를 글로 옮긴 것 → 풀이 모델 | 이미지를 못 보는 큰 텍스트 모델(gpt-oss:20b) 활용 |
+
+- 범위: **홀수형**, 국어 공통 1~34번(76점), 수학 공통 1~22번(74점), 영어 읽기 18~45번(63점). 선택과목·영어 듣기는 제외.
+- 영어 18번은 지문 대부분이 그림이라 텍스트 조건에서 제외(27문항).
+- 모든 호출은 `temperature 0`, `num_ctx 16384`, 한 번씩.
+
+## 따라 하기
+
+### 1. 문제지 받기 (직접)
+
+[한국교육과정평가원 대학수학능력시험 누리집](https://www.suneung.re.kr) → 기출문제 → 2026학년도 → `국어영역_문제지.pdf`, `수학영역_문제지.pdf`, `영어영역_문제지.pdf`.
+
+> 문제지의 저작권은 한국교육과정평가원에 있습니다. 이 레포에는 **문제 원문·이미지를 넣지 않았고**, 정답 번호와 배점(`answers_2026.json`)만 있습니다. 문항 데이터는 아래 스크립트로 각자 만드세요.
+
+### 2. 문항 데이터 만들기
+
+```bash
+hub/.venv/bin/python research/csat/prepare.py --kor 국어영역_문제지.pdf --math 수학영역_문제지.pdf --eng 영어영역_문제지.pdf --out data/csat2026
+```
+
+- 국어·영어: `units.jsonl`(문항 단위), `<과목>_raw.txt`(원문), `<과목>_structured.md`(문항 번호 제목)
+- **레이아웃 복원**: 시험지의 2단 선택지 표(영어 36·37·40·43번)는 PDF 글자 순서가 행 단위로 뒤섞여 나오고("① ③ ⑤ (A) (B) (C) － － －…"), 문장 삽입 문항(38·39번)은 상자 속 '주어진 문장'이 본문과 구별 없이 붙어 나옵니다. `prepare.py`가 표를 열 단위로 다시 읽어 "① (A) － (C) － (B)"로 되돌리고, 주어진 문장에 `[주어진 문장]` 표시를 붙입니다(원문 텍스트 자체를 고치므로 모든 조건에 똑같이 적용). 행·열 개수가 맞지 않으면 손대지 않습니다.
+- 수학: `math_q01.png` … (PDF 글자 좌표로 문항 영역을 찾아 macOS PDFKit으로 렌더링 → `render_pages.swift`)
+- 수학 PDF에서 pypdf로 뽑은 글에는 **수식이 거의 다 빠져** 있어요(한국어 문장만 남음). 그래서 수학은 이미지·OCR 조건으로만 잽니다.
+
+### 3. 돌리기
+
+```bash
+hub/.venv/bin/python research/csat/run_eval.py --data data/csat2026 --models gemma4:e2b,gemma4:e4b --conditions oracle,rag-naive,rag-structured,rag-lookup --subjects kor,eng --out results.jsonl
+```
+
+```bash
+hub/.venv/bin/python research/csat/run_eval.py --data data/csat2026 --models gemma4:e4b --conditions vision --subjects math --think on --out results.jsonl
+```
+
+```bash
+hub/.venv/bin/python research/csat/run_eval.py --data data/csat2026 --models gpt-oss:20b --conditions ocr --subjects math --think medium --ocr-model gemma4:e4b --out results.jsonl
+```
+
+`--think`: `off | on | low | medium | high` (gpt-oss는 low/medium/high). `--limit 3` 으로 먼저 짧게 확인해 보세요.
+
+### 4. 요약
+
+```bash
+hub/.venv/bin/python research/csat/summarize.py results.jsonl
+```
+
+## 결과
+
+전체 표·해석·한계는 [docs/05-applications/03-evaluation.md](../../docs/05-applications/03-evaluation.md#1-수능-국어수학영어).
+
+## 파일
+
+| 파일 | 내용 |
+|---|---|
+| `prepare.py` | PDF → 문항 텍스트·구조화 문서·수학 문항 이미지 (홀수형만, 머리말·쪽번호 제거) |
+| `render_pages.swift` | PDFKit으로 쪽 렌더링 (macOS) |
+| `run_eval.py` | 조건별 평가, 결과를 한 줄씩 jsonl로 (중단돼도 이어서 분석 가능) |
+| `summarize.py` | 결과 표 (같은 문항이 여러 번 있으면 마지막 결과 사용) |
+| `answers_2026.json` | 정답 번호·배점 (평가원 정답표) |
+
+## 실험하며 알게 된 것 (요약)
+
+- **"5번"은 검색으로 찾기 어렵습니다.** 선택지 ⑤가 NFKC 정규화로 `5`가 되어 거의 모든 조각에 `5`가 들어 있고, 임베딩은 숫자에 약합니다. 문서에 `## 국어 5번 문항` 제목을 붙이는 것만으로는 부족했고, 질문의 "N번"을 제목과 바로 맞춰 **절 전체를 가져오는 번호 조회**를 넣자 검색 적중이 100%가 됐습니다.
+- **RAG가 LLM에게 건네는 글은 원문 그대로.** 처음엔 문서를 저장할 때 NFKC 정규화를 해서 LLM이 받는 시험지의 ①~⑤가 1~5로, ㉠·ⓐ가 다른 글자로 바뀌었고, 검색 적중 100%인데도 정답률이 상한보다 크게 낮았습니다. 정규화는 검색 토큰화에서만 하고, 저장은 원문(NFC)으로 바꿨습니다.
+- **채점 스크립트도 정규화를 맞춰야 합니다.** 처음 버전은 색인된 글이 NFKC로 바뀌어 있어(ⓐ～ⓔ → a~e) 원문 발문과 그대로 비교하면 검색 적중을 실제보다 낮게 셌습니다. 양쪽을 같은 방식으로 정규화해 비교합니다(`run_eval.squash`).
+- `⑤`.isdigit()은 `True`인데 `int('⑤')`는 실패합니다. 답 추출에서 원문자를 먼저 처리하세요.
+- **PDF 텍스트를 그대로 믿지 마세요.** 처음 돌렸을 때 영어 36·37번(순서 배열)은 세 모델 모두 틀렸는데, 모델 탓이 아니라 선택지 표가 뒤섞여 어느 번호가 어떤 순서인지 알 수 없었기 때문이었습니다. 모든 모델이 같은 문항을 틀리면 데이터부터 의심하세요.

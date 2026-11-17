@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>ko</string>
+	<key>CFBundleDisplayName</key>
+	<string>Nunchi</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+
+	<!-- Meta AI 앱이 등록/권한 처리 후 이 앱을 다시 열 때 쓰는 URL 스킴 -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nunchi</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Meta Wearables Device Access Toolkit 설정 -->
+	<key>MWDAT</key>
+	<dict>
+		<key>AppLinkURLScheme</key>
+		<string>nunchi://</string>
+		<!-- 개발자 모드: 0 이면 앱 인증(attestation)을 건너뜁니다. 배포 시에는 Developer Center 값으로 -->
+		<key>MetaAppID</key>
+		<string>$(META_APP_ID)</string>
+		<key>ClientToken</key>
+		<string>$(CLIENT_TOKEN)</string>
+		<key>TeamID</key>
+		<string>$(DEVELOPMENT_TEAM)</string>
+		<!-- 연구용 오프라인 앱이므로 Meta 분석 데이터 전송을 끕니다 -->
+		<key>Analytics</key>
+		<dict>
+			<key>OptOut</key>
+			<true/>
+		</dict>
+	</dict>
+
+	<!-- 블루투스 LE(제어) · 블루투스 클래식(카메라) · 오디오 -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>external-accessory</string>
+		<string>audio</string>
+	</array>
+	<key>UISupportedExternalAccessoryProtocols</key>
+	<array>
+		<string>com.meta.ar.wearable</string>
+	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Meta AI 안경과 연결하기 위해 블루투스를 사용합니다.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Meta AI 안경과 연결하기 위해 블루투스를 사용합니다.</string>
+
+	<!-- 로컬 네트워크: 안경 Wi-Fi 카메라 스트리밍 + 같은 와이파이의 허브(컴퓨터) 접속 -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>같은 와이파이에 있는 허브 컴퓨터와 안경에 연결하기 위해 로컬 네트워크를 사용합니다. 인터넷은 필요하지 않습니다.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_bonjour._tcp</string>
+	</array>
+	<!-- 허브는 집/현장의 로컬 네트워크(http://192.168.x.x)에 있으므로 로컬 주소에 한해 HTTP 허용 -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+
+	<key>NSCameraUsageDescription</key>
+	<string>가상 안경(개발용) 모드에서 폰 카메라를 안경 카메라처럼 사용합니다.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>안경(또는 폰) 마이크로 질문을 녹음합니다.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>단독 모드에서 기기 안에서만 음성을 글자로 바꿉니다 (서버로 보내지 않음).</string>
+
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
+</dict>
+</plist>

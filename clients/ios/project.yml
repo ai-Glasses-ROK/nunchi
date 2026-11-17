@@ -1,0 +1,43 @@
+# XcodeGen 설정 파일. 수정했다면 `xcodegen generate` 로 Nunchi.xcodeproj 를 다시 만드세요.
+# (생성된 .xcodeproj 도 레포에 들어 있어서, XcodeGen 없이 바로 열어도 됩니다)
+name: Nunchi
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "17.2" # Meta DAT SDK 최소 요구 버전
+  createIntermediateGroups: true
+  developmentLanguage: ko
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Meta Wearables Developer Center 값 (개발자 모드에서는 0/비워 둬도 됩니다)
+    META_APP_ID: "0"
+    CLIENT_TOKEN: ""
+packages:
+  MWDAT:
+    url: https://github.com/facebook/meta-wearables-dat-ios
+    exactVersion: 1.0.1
+targets:
+  Nunchi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Nunchi
+    settings:
+      base:
+        # ⚠️ 본인만의 값으로 바꾸세요 (예: com.myname.nunchi). 같은 ID는 다른 개발자와 겹칠 수 없습니다.
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.nunchi
+        INFOPLIST_FILE: Nunchi/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - package: MWDAT
+        product: MWDATCore
+      - package: MWDAT
+        product: MWDATCamera
+      - package: MWDAT
+        product: MWDATMockDevice # 가상 안경 (Debug 빌드에서만 사용)
