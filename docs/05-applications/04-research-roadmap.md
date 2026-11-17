@@ -35,7 +35,8 @@
 
 ## 4. 앱
 
-- [ ] Android 빌드·실기기 검증, 단독 모드(llama.cpp/LiteRT) 이식
+- [x] Android 빌드·에뮬레이터 실행 검증 (가상 안경 사진 → 허브 답변)
+- [ ] Android 실기기·실물 안경 검증, 단독 모드(llama.cpp/LiteRT) 이식
 - [ ] DAT Inputs(안경 캡처 버튼) / Voice Invocations로 핸즈프리 호출
 - [ ] Bonjour로 허브 자동 찾기
 - [ ] Meta Ray-Ban Display에 답·근거 표시(MWDATDisplay)

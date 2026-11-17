@@ -11,6 +11,7 @@ Smart glasses that see, retrieve, and answer without sending a single frame off 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![hub-tests](https://github.com/ai-Glasses-ROK/nunchi/actions/workflows/hub-tests.yml/badge.svg)](https://github.com/ai-Glasses-ROK/nunchi/actions/workflows/hub-tests.yml)
+[![android-build](https://github.com/ai-Glasses-ROK/nunchi/actions/workflows/android-build.yml/badge.svg)](https://github.com/ai-Glasses-ROK/nunchi/actions/workflows/android-build.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Offline](https://img.shields.io/badge/internet-not%20required-success)
 ![Research](https://img.shields.io/badge/status-research%20prototype-orange)
@@ -134,13 +135,13 @@ cd hub && .venv/bin/nunchi ask "발전기에 E2 코드가 떴어. 어떻게 해?
 nunchi/
 ├── hub/                 허브 서버·CLI (Python, FastAPI) — 테스트 45개
 ├── clients/ios/         iOS 앱 (SwiftUI, Meta DAT 1.0.1, 가상 안경)
-├── clients/android/     Android 앱 (Kotlin, Compose)
+├── clients/android/     Android 앱 (Kotlin, Compose, 에뮬레이터 검증)
 ├── research/csat/       수능 실험 (문제 원문은 포함하지 않음)
 ├── research/latency/    지연시간 측정 (p50/p90)
 ├── research/results/    실험 원자료 (문항별 결과·지연시간, 숫자만)
 ├── examples/            가상의 예제 문서 3개 + 평가 질문 16개
 ├── scripts/             맥 설치, 오프라인 꾸러미 만들기
-├── .github/workflows/   허브 테스트 자동 실행 (Python 3.10·3.12)
+├── .github/workflows/   허브 테스트(Python 3.10·3.12)·Android 빌드 자동 실행
 └── docs/                기초 → 개념 → 설치 → 실전 → 응용 → 참고 (32편)
 ```
 

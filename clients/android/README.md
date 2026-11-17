@@ -2,7 +2,7 @@
 
 안경 마이크(블루투스 SCO)·카메라(Meta DAT) → 허브 → 폰 TTS로 안경 스피커.
 
-- 상태: Meta 공식 샘플(CameraAccess, DAT 1.0.1)의 API·빌드 버전을 따라 작성. **컴파일·실기기 미검증** — 빌드 오류는 이슈로 알려 주세요.
+- 상태: **빌드·실행 검증** — JDK 21로 `assembleDebug`·`lintDebug`(오류 0) 통과, Android 15 에뮬레이터에서 가상 안경 사진 → 허브 비전 답변까지 확인. 실물 안경·실기기는 미검증.
 - 최소: Android 12 (API 31)
 
 Android Studio → Open → 이 폴더 → Run. 가이드: [docs/04-practice/06-android-app.md](../../docs/04-practice/06-android-app.md)

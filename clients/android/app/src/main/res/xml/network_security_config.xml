@@ -2,8 +2,9 @@
 <!--
   허브는 로컬 네트워크의 http://192.168.x.x:8765 같은 주소라 평문(HTTP) 접속을 허용해야 합니다.
   안드로이드는 IP 대역으로 제한할 수 없어서 전체 허용으로 두었습니다. 이 앱은 허브 외의 서버에 접속하지 않습니다.
-  더 안전하게 하려면 허브를 `nunchi serve --https` 로 띄우고 이 설정을 지우세요.
+  더 안전하게 하려면 허브를 nunchi serve 의 https 옵션으로 띄우고 이 설정을 지우세요.
 -->
-<network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <!-- 인터넷 없는 와이파이의 허브(HTTP)에 접속하기 위한 의도된 설정 -->
+    <base-config cleartextTrafficPermitted="true" tools:ignore="InsecureBaseConfiguration" />
 </network-security-config>

@@ -102,7 +102,6 @@ class Glasses(private val context: Context) {
                 BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     ?: throw IllegalStateException("HEIC 사진을 열지 못했어요")
             }
-            else -> throw IllegalStateException("알 수 없는 사진 형식이에요")
         }
         return ByteArrayOutputStream().use { out ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)

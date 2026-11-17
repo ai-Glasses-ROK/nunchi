@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.aiglassesrok.nunchi.ChatMessage
@@ -67,8 +68,10 @@ fun MainScreen(viewModel: MainViewModel, activity: Activity) {
     var showSettings by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
-    LaunchedEffect(ui.messages.size) {
-        if (ui.messages.isNotEmpty()) listState.animateScrollToItem(ui.messages.lastIndex)
+    // 답이 스트리밍으로 길어지는 동안에도 마지막 말풍선의 끝이 보이게 따라 내려감
+    val last = ui.messages.lastOrNull()
+    LaunchedEffect(ui.messages.size, last?.text?.length, last?.sources?.size, last?.meta) {
+        if (ui.messages.isNotEmpty()) listState.animateScrollToItem(ui.messages.lastIndex, scrollOffset = 100_000)
     }
 
     MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {
@@ -81,7 +84,8 @@ fun MainScreen(viewModel: MainViewModel, activity: Activity) {
                             Text(
                                 "허브: ${ui.hubStatus} · 안경: ${ui.glassesStatus}" + if (ui.virtualGlasses) " (가상)" else "",
                                 style = MaterialTheme.typography.labelSmall,
-                                maxLines = 1,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     },

@@ -1,6 +1,10 @@
 # 실습 6 — Android 앱 (Nunchi)
 
-> 상태: 코드는 Meta 공식 샘플(meta-wearables-dat-android 1.0.1, CameraAccess)의 API·빌드 설정을 그대로 따라 작성했지만, **이 레포 작성 시점에는 컴파일·실기기 검증을 하지 않았어요**(빌드 환경에 Android SDK가 없음). 처음 빌드할 때 오류가 나면 이슈로 알려 주세요.
+> 상태: **빌드·실행 검증 완료** — Meta DAT 1.0.1, Gradle 8.14.1 + AGP 8.11.1, JDK 21로 `assembleDebug`·`lintDebug`(오류 0) 통과. Android 15 에뮬레이터에서 가상 안경(MockDeviceKit) 사진 → 허브 비전 답변까지 확인했어요. 실물 안경·실기기는 아직 검증 전입니다.
+
+![에뮬레이터에서 가상 안경 사진에 답하는 Android 앱](../images/android-virtual-glasses-e2.png)
+
+*Android 15 에뮬레이터 + 가상 안경 + 맥의 허브(`http://10.0.2.2:8765`). 같은 사진을 두 번째로 물은 화면이라 캐시 덕에 빠릅니다(새 사진이면 중앙값 2.7초 → [평가](../05-applications/03-evaluation.md#3-지연시간-p50--p90)).*
 
 ## 1. 준비물
 
@@ -20,6 +24,20 @@
 mwdat_application_id=<Developer Center 앱 ID>
 mwdat_client_token=<클라이언트 토큰>
 ```
+
+### 명령줄로 빌드하고 에뮬레이터에서 실행 (Android Studio 없이)
+
+Gradle 8.14는 JDK 17~24에서 돕니다(JDK 26이면 실패). 맥이라면 `brew install openjdk@21` 후:
+
+```bash
+cd clients/android && JAVA_HOME=$(brew --prefix openjdk@21)/libexec/openjdk.jdk/Contents/Home ./gradlew assembleDebug
+```
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+에뮬레이터에서는 맥의 `127.0.0.1`이 **`10.0.2.2`** 로 보입니다. 앱 설정의 허브 주소를 `http://10.0.2.2:8765`로 두면 맥에서 `nunchi serve`(기본 127.0.0.1)로 띄운 허브에 바로 붙어요.
 
 ## 3. 사용
 
@@ -52,6 +70,15 @@ rec.setPreferredDevice(scoDevice)
 
 ### DatResult 다루기 팁
 `onSuccess { }` 콜백 **안에서 suspend 함수를 부르지 마세요**. `fold(onSuccess = { it }, onFailure = { e, _ -> throw … })` 로 값을 꺼낸 뒤 바깥에서 기다리는 편이 안전합니다(이 레포의 `Glasses.kt` 방식).
+
+### 빌드·실행하며 알게 된 것
+
+| 증상 | 원인·해결 |
+|---|---|
+| `mergeDebugResources` 실패: "The string \"--\" is not permitted within comments" | XML 주석 안에 `--https` 같은 **하이픈 두 개**를 쓰면 안 됨 → 주석 문구를 바꿈 |
+| 답 말풍선이 입력창에 가려 잘림 | 자동 스크롤이 '메시지 개수'에만 반응 → 스트리밍으로 **글자가 늘어날 때도** 마지막 말풍선 끝까지 따라 내려가게 |
+| 상단 상태 줄 끝이 잘림 ("(가상)"이 안 보임) | `maxLines = 1` → 두 줄 + 말줄임 |
+| 린트: 백업 경고 | 허브 주소·토큰이 클라우드 백업·기기 이전으로 나가지 않게 `data_extraction_rules.xml`로 전부 제외 |
 
 ## 5. 알려진 한계
 
