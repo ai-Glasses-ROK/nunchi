@@ -41,6 +41,17 @@ log = logging.getLogger("nunchi")
 
 NOT_HEARD = "잘 못 들었어요. 다시 한 번 말씀해 주세요."
 FOLLOW_UP_HINTS = ("그럼", "그러면", "그거", "그건", "그게", "거기", "그곳", "그때", "그리고", "또", "저거", "이거", "그 ", "왜", "언제", "몇")
+# 드론 상태를 묻는 말 (음성 질문일 때 상태 키워드를 검색어에 붙일지 정함 — Android DroneTelemetry.isDroneQuestion과 같은 낱말)
+DRONE_WORDS = (
+    "드론", "기체", "픽스호크", "pixhawk", "비행", "시동", "이륙", "착륙", "배터리", "전압", "gps", "위성", "고도",
+    "모드", "나침반", "컴퍼스", "프리암", "prearm", "경고", "에러", "오류", "메시지", "상태", "위치", "어디", "속도",
+    "방향", "자세", "arm", "센서", "신호", "조종기", "홈", "출발점", "귀환", "rtl", "고장", "문제", "왜", "안 돼", "안돼",
+)
+
+
+def is_drone_question(question: str) -> bool:
+    q = question.lower()
+    return any(w in q for w in DRONE_WORDS) or len(q.replace(" ", "")) <= 8
 
 
 @dataclass
@@ -274,6 +285,9 @@ class Hub:
         style: str | None = None,
         top_k: int | None = None,
         speak: bool = False,
+        live_context: str | None = None,
+        live_hint: str | None = None,
+        image_source: str = "glasses",
         _t0: float | None = None,
         _extra_timings: dict | None = None,
         _from_voice: bool = False,
@@ -305,6 +319,11 @@ class Hub:
             query = self.retrieval_query(question, history)
             if caption:
                 query = f"{query} {caption}"
+            # 상태→검색: 드론이 보낸 경고(PreArm 등)를 검색어에 보탭니다. "왜 시동이 안 걸려?"처럼 검색어가 없는 질문용.
+            # 폰은 드론 질문일 때만 보내지만, 음성은 받아쓴 뒤에야 질문을 알 수 있어 여기서 한 번 더 거릅니다.
+            hint = " ".join((live_hint or "").split())[:300]
+            if hint and (not _from_voice or images or is_drone_question(question)):
+                query = f"{query} {hint}"
             hits, info = self.retriever.search(query, k=top_k or s.top_k)
             sources = [h.to_dict(i) for i, h in enumerate(hits, start=1)]
             timings["retrieval_ms"] = round((time.perf_counter() - t) * 1000, 1)
@@ -322,7 +341,15 @@ class Hub:
 
         # 2) 생성 (+ 문장 단위 TTS를 별도 스레드에서 병렬로)
         messages = build_messages(
-            question, hits, history, style=style, strict=s.strict_rag, vision=bool(images), from_voice=_from_voice
+            question,
+            hits,
+            history,
+            style=style,
+            strict=s.strict_rag,
+            vision=bool(images),
+            from_voice=_from_voice,
+            live=(live_context or "")[:4000],
+            image_source=image_source,
         )
         backend = self.vision_chat if images else self.chat
         streamer = SentenceStreamer()

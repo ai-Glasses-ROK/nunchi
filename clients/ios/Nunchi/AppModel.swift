@@ -23,6 +23,23 @@ final class AppModel: ObservableObject {
     @Published private(set) var hubStatus = "확인 전"
     @Published private(set) var kbStatus = ""
 
+    /// 드론 카메라 화면 위에 띄울 Gemma 4 결과
+    struct DroneAnswer {
+        var text = ""
+        var caption = ""
+        var sources: [String] = []
+        var meta = ""
+        var busy = false
+        var error = ""
+    }
+
+    @Published var droneAnswer = DroneAnswer()
+    @Published private(set) var autoAnalyze = false
+    let droneCamera = DroneCamera()
+    let droneLink = DroneLink()
+    private var autoTask: Task<Void, Never>?
+    static let defaultDroneQuestion = "지금 보이는 것을 한두 문장으로 설명해 줘."
+
     let glasses = GlassesController()
     private let recorder = VoiceRecorder()
     private let speaker = SpeechOutput()
@@ -37,7 +54,90 @@ final class AppModel: ObservableObject {
         if UserDefaults.standard.string(forKey: "NunchiSelfTest") == "photo" {
             Task { await self.runPhotoSelfTest() }
         }
+        // `-NunchiSelfTest drone`: 드론 카메라(저장된 설정: 가상 또는 MJPEG 주소) + UDP 14550 텔레메트리 → 허브 Gemma 4 분석까지 자동으로
+        if UserDefaults.standard.string(forKey: "NunchiSelfTest") == "drone" {
+            Task { await self.runDroneSelfTest() }
+        }
         #endif
+    }
+
+    #if DEBUG
+    private func runDroneSelfTest() async {
+        debugLog("drone selftest: start")
+        // 드론 화면에 저장된 카메라가 네트워크(MJPEG)면 그 주소로 (맥 카메라·5.8GHz 수신기 중계 시험), 아니면 가상 카메라
+        let defaults = UserDefaults.standard
+        if defaults.string(forKey: "droneCameraSource") == "mjpeg", let url = defaults.string(forKey: "droneCameraURL"), !url.isEmpty {
+            droneCamera.startMJPEG(url)
+        } else {
+            droneCamera.startVirtual()
+        }
+        try? droneLink.startUDP(port: 14550)
+        try? await Task.sleep(nanoseconds: 6_000_000_000)
+        await analyzeDroneFrame(question: "")
+        debugLog("drone selftest: camera=\(droneCamera.status) telemetry=\(droneLink.telemetry.summary()) answer=\(droneAnswer.text) caption=\(droneAnswer.caption) meta=\(droneAnswer.meta) error=\(droneAnswer.error)")
+        // 실기 ArduPilot은 PreArm 묶음을 30초마다 보내므로 한 번은 받은 뒤에 묻기
+        try? await Task.sleep(nanoseconds: 30_000_000_000)
+        debugLog("drone selftest: prearm=\(droneLink.telemetry.currentPrearm().map(\.text))")
+        await ask("왜 시동이 안 걸려?")
+        debugLog("drone selftest: done · \(messages.last?.text ?? "")")
+    }
+    #endif
+
+    // MARK: - 드론 카메라 → Gemma 4 → 화면
+
+    /// 드론이 연결돼 있으면 허브에 함께 보낼 실시간 상태 (드론을 묻는 질문일 때만 검색어에 상태 키워드)
+    private func droneLive(for question: String) -> HubClient.Live {
+        let t = droneLink.telemetry
+        guard t.hasVehicle else { return HubClient.Live() }
+        return HubClient.Live(context: t.report(), hint: DroneTelemetry.isDroneQuestion(question) ? t.retrievalHint() : "")
+    }
+
+    func analyzeDroneFrame(question: String, speak: Bool = true) async {
+        guard !droneAnswer.busy else { return }
+        guard let jpeg = droneCamera.jpegForAnalysis() else {
+            droneAnswer = DroneAnswer(error: "카메라 화면이 아직 없어요. 카메라를 켜 주세요.")
+            return
+        }
+        let q = question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Self.defaultDroneQuestion : question
+        let s = settings
+        droneAnswer = DroneAnswer(busy: true)
+        var answer = ""
+        do {
+            // 아이폰에서는 사진을 이해하는 기기 내 모델이 없어 허브의 Gemma 4가 분석합니다
+            let client = try HubClient(base: s.hubURL, token: s.hubToken)
+            try await client.vision(jpeg: jpeg, question: q, sessionId: sessionId, speak: false, source: "drone", live: droneLive(for: q)) { [weak self] event in
+                guard let self else { return }
+                switch event {
+                case .caption(let text): self.droneAnswer.caption = text
+                case .retrieval(let sources): self.droneAnswer.sources = sources.map { "[\($0.n)] \($0.label)" }
+                case .delta(let text):
+                    answer += text
+                    self.droneAnswer.text = answer
+                case .error(let stage, let message): self.droneAnswer.error = "\(stage): \(message)"
+                case .done(let done):
+                    if !done.ok || answer.isEmpty { self.droneAnswer.text = done.answer }
+                    if let t = done.timings { self.droneAnswer.meta = Self.format(timings: t) }
+                    if speak && s.voice != .off { self.speaker.speak(done.speech) }
+                default: break
+                }
+            }
+        } catch {
+            droneAnswer.error = "분석 실패: \(error.localizedDescription)"
+        }
+        droneAnswer.busy = false
+    }
+
+    func setAutoAnalyze(_ on: Bool, question: String = "") {
+        autoTask?.cancel()
+        autoTask = nil
+        autoAnalyze = on
+        guard on else { return }
+        autoTask = Task { [weak self] in
+            while !Task.isCancelled {
+                await self?.analyzeDroneFrame(question: question, speak: false)
+                try? await Task.sleep(nanoseconds: 6_000_000_000)
+            }
+        }
     }
 
     #if DEBUG
@@ -99,8 +199,9 @@ final class AppModel: ObservableObject {
         let userIndex = append(Message(role: .user, text: q))
         let s = settings
         if s.mode == .hub {
+            let live = droneLive(for: q)
             await runHub(userIndex: userIndex) { client, onEvent in
-                try await client.ask(q, sessionId: self.sessionId, speak: s.voice == .hub, onEvent: onEvent)
+                try await client.ask(q, sessionId: self.sessionId, speak: s.voice == .hub, live: live, onEvent: onEvent)
             }
         } else {
             await answerOnDevice(q)
@@ -152,6 +253,8 @@ final class AppModel: ObservableObject {
                 switch event {
                 case .transcript(let text):
                     self.messages[userIndex].text = text.isEmpty ? "🎙️ (알아듣지 못함)" : "🎙️ \(text)"
+                case .caption(let text):
+                    self.messages[answerIndex].meta += "📷 \(text)\n"
                 case .retrieval(let sources):
                     self.messages[answerIndex].sources = sources.map { "[\($0.n)] \($0.label)" }
                 case .delta(let text):
@@ -270,7 +373,7 @@ final class AppModel: ObservableObject {
     }
 
     private static func format(timings: [String: Double]) -> String {
-        let names: [(String, String)] = [("stt_ms", "인식"), ("retrieval_ms", "검색"), ("first_token_ms", "첫 글자"), ("total_ms", "전체")]
+        let names: [(String, String)] = [("stt_ms", "인식"), ("caption_ms", "캡션"), ("retrieval_ms", "검색"), ("first_token_ms", "첫 글자"), ("total_ms", "전체")]
         return "⏱ " + names.compactMap { key, name in timings[key].map { "\(name) \(Int($0))ms" } }.joined(separator: " · ")
     }
 }

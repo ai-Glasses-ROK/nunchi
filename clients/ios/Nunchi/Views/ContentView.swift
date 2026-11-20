@@ -4,6 +4,7 @@ struct ContentView: View {
     @EnvironmentObject private var model: AppModel
     @State private var input = ""
     @State private var showSettings = false
+    @State private var showDrone = false
     @AppStorage(SettingsKey.mode) private var mode = AssistantMode.hub.rawValue
 
     var body: some View {
@@ -32,6 +33,10 @@ struct ContentView: View {
                     Button("초기화") { model.resetConversation() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button { showDrone = true } label: { Image(systemName: "airplane") }
+                        .accessibilityLabel("드론 카메라·비행컨트롤러")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { showSettings = true } label: { Image(systemName: "gearshape") }
                         .accessibilityLabel("설정")
                 }
@@ -39,9 +44,13 @@ struct ContentView: View {
             .sheet(isPresented: $showSettings) {
                 SettingsView().environmentObject(model)
             }
+            .fullScreenCover(isPresented: $showDrone) {
+                DroneView(camera: model.droneCamera, link: model.droneLink).environmentObject(model)
+            }
             .task {
                 #if DEBUG
                 if UserDefaults.standard.bool(forKey: "NunchiShowSettings") { showSettings = true }
+                if UserDefaults.standard.string(forKey: "NunchiSelfTest") == "drone" { showDrone = true }
                 #endif
                 if mode == AssistantMode.hub.rawValue { await model.checkHub() }
             }

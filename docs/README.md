@@ -10,6 +10,7 @@
 | 개발을 전혀 몰라요 | [큰 그림](01-basics/01-big-picture.md) → [용어 사전](01-basics/02-glossary.md) → [터미널 첫걸음](01-basics/07-terminal-101.md) → [허브 설치](03-setup/01-hub.md) → [첫 RAG 실습](04-practice/01-first-rag.md) |
 | 일단 돌려 보고 싶어요 | [허브 설치](03-setup/01-hub.md) → [첫 RAG 실습](04-practice/01-first-rag.md) → [음성](04-practice/02-voice.md) → [사진](04-practice/03-vision.md) |
 | 안경으로 실사용하고 싶어요 | [공기계 준비](03-setup/03-spare-phone.md) → [재난문자 없이 쓰기](03-setup/04-airplane-mode.md) → [오프라인 와이파이](03-setup/05-offline-network.md) → [iOS 앱](04-practice/05-ios-app.md) 또는 [Android 앱](04-practice/06-android-app.md) |
+| 드론(픽스호크)을 붙이고 싶어요 | [드론 연결](04-practice/08-drone.md) → [드론 영상: 카메라+송신기](04-practice/09-fpv-video.md) → [Android 앱](04-practice/06-android-app.md) → [폰 단독 모드](04-practice/07-standalone-phone.md) |
 | 연구 결과가 궁금해요 | [평가와 실험 결과](05-applications/03-evaluation.md) → [구조와 설계 결정](02-concepts/01-architecture.md) → [연구 로드맵](05-applications/04-research-roadmap.md) |
 
 ## 전체 목록
@@ -44,7 +45,9 @@
 4. [허브 API 레퍼런스](04-practice/04-hub-api.md)
 5. [iOS 앱](04-practice/05-ios-app.md) — 가상 안경 포함
 6. [Android 앱](04-practice/06-android-app.md)
-7. [폰 단독 모드](04-practice/07-standalone-phone.md)
+7. [폰 단독 모드](04-practice/07-standalone-phone.md) — Android도 폰 안 RAG(2-gram BM25 + 폰 Gemma 4)
+8. [드론(픽스호크) 연결](04-practice/08-drone.md) — 드론 카메라 → Gemma 4 → 화면, 실시간 상태로 RAG
+9. [드론 영상 연결](04-practice/09-fpv-video.md) — 소형 FPV 카메라 + 5.8GHz 송신기(VTX), 받는 쪽 수신기, 영상 중계
 
 ### 5. 응용 — 더 잘 쓰기
 1. [활용 시나리오](05-applications/01-use-cases.md)

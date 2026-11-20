@@ -126,21 +126,22 @@ cd hub && .venv/bin/nunchi ask "발전기에 E2 코드가 떴어. 어떻게 해?
 | 모드 | 구성 | 언제 |
 |---|---|---|
 | **허브 모드** (기본) | 안경 → 공기계 → 와이파이 → 허브 LLM | 정확도·사진 질문이 중요할 때 |
-| **폰 단독 모드** | 안경 → 공기계 안에서 검색 + 기기 내 LLM(iOS 26 Foundation Models) | 허브 없이 걸어 다닐 때 |
+| **폰 단독 모드** | 안경 → 공기계 안에서 검색 + 기기 내 LLM(iOS 26 Foundation Models · Android 폰 Gemma 4) | 허브 없이 걸어 다닐 때 |
+| **드론 모드** | 픽스호크(MAVLink) + 드론 카메라 → Gemma 4 → 영상 위에 결과, 기체 상태로 RAG | 현장 점검·드론 문제 해결 → [실습 8](docs/04-practice/08-drone.md) · 영상 연결 [실습 9](docs/04-practice/09-fpv-video.md) |
 | **웹 클라이언트** | 아무 폰 브라우저 → 허브 | 앱 설치 없이 바로 시험 |
 
 ## 레포 구조
 
 ```
 nunchi/
-├── hub/                 허브 서버·CLI (Python, FastAPI) — 테스트 45개
+├── hub/                 허브 서버·CLI (Python, FastAPI) — 테스트 52개
 ├── clients/ios/         iOS 앱 (SwiftUI, Meta DAT 1.0.1, 가상 안경)
-├── clients/android/     Android 앱 (Kotlin, Compose, 에뮬레이터 검증)
+├── clients/android/     Android 앱 (Kotlin, Compose, 에뮬레이터 검증, 드론·폰 RAG)
 ├── research/csat/       수능 실험 (문제 원문은 포함하지 않음)
 ├── research/latency/    지연시간 측정 (p50/p90)
 ├── research/results/    실험 원자료 (문항별 결과·지연시간, 숫자만)
-├── examples/            가상의 예제 문서 3개 + 평가 질문 16개
-├── scripts/             맥 설치, 오프라인 꾸러미 만들기
+├── examples/            가상의 예제 문서 3개 + 평가 질문 16개, drone/ 픽스호크 점검 안내
+├── scripts/             맥 설치, 오프라인 꾸러미, MAVLink 중계(mavlink_bridge.py)
 ├── .github/workflows/   허브 테스트(Python 3.10·3.12)·Android 빌드 자동 실행
 └── docs/                기초 → 개념 → 설치 → 실전 → 응용 → 참고 (32편)
 ```

@@ -31,6 +31,7 @@ struct HubHealth: Decodable {
 
 enum HubEvent {
     case transcript(String)
+    case caption(String)
     case retrieval([HubSource])
     case delta(String)
     case sentence(String)
@@ -80,10 +81,18 @@ final class HubClient {
         return try JSONDecoder().decode(HubHealth.self, from: data)
     }
 
-    func ask(_ question: String, sessionId: String, speak: Bool, onEvent: @escaping @MainActor (HubEvent) -> Void) async throws {
+    /// 드론 비행컨트롤러의 실시간 상태. context는 프롬프트의 [실시간 기체 상태] 칸에, hint(PreArm 메시지 등)는 검색어에 붙습니다.
+    struct Live {
+        var context = ""
+        var hint = ""
+    }
+
+    func ask(_ question: String, sessionId: String, speak: Bool, live: Live = Live(), onEvent: @escaping @MainActor (HubEvent) -> Void) async throws {
         var req = request("v1/ask", method: "POST")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let body: [String: Any] = ["question": question, "session_id": sessionId, "stream": true, "speak": speak]
+        var body: [String: Any] = ["question": question, "session_id": sessionId, "stream": true, "speak": speak]
+        if !live.context.isEmpty { body["live_context"] = String(live.context.prefix(4000)) }
+        if !live.hint.isEmpty { body["live_hint"] = String(live.hint.prefix(500)) }
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
         try await stream(req, onEvent: onEvent)
     }
@@ -97,13 +106,17 @@ final class HubClient {
         try await stream(form.request(base: request("v1/voice", method: "POST")), onEvent: onEvent)
     }
 
-    func vision(jpeg: Data, question: String, sessionId: String, speak: Bool, onEvent: @escaping @MainActor (HubEvent) -> Void) async throws {
+    func vision(jpeg: Data, question: String, sessionId: String, speak: Bool, source: String = "glasses", live: Live = Live(),
+                onEvent: @escaping @MainActor (HubEvent) -> Void) async throws {
         var form = MultipartForm()
         form.addFile(name: "image", filename: "photo.jpg", mime: "image/jpeg", data: jpeg)
         form.addField("question", question)
         form.addField("session_id", sessionId)
         form.addField("stream", "true")
         form.addField("speak", speak ? "true" : "false")
+        form.addField("image_source", source) // glasses(안경 카메라) | drone(드론 카메라)
+        if !live.context.isEmpty { form.addField("live_context", String(live.context.prefix(4000))) }
+        if !live.hint.isEmpty { form.addField("live_hint", String(live.hint.prefix(500))) }
         try await stream(form.request(base: request("v1/vision", method: "POST")), onEvent: onEvent)
     }
 
@@ -156,6 +169,8 @@ final class HubClient {
         switch type {
         case "transcript":
             return .transcript(obj["text"] as? String ?? "")
+        case "caption":
+            return .caption(obj["text"] as? String ?? "")
         case "retrieval":
             let raw = (try? JSONSerialization.data(withJSONObject: obj["sources"] ?? [])) ?? Data("[]".utf8)
             return .retrieval((try? JSONDecoder().decode([HubSource].self, from: raw)) ?? [])

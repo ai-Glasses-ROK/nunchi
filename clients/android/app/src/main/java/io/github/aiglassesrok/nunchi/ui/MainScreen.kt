@@ -1,6 +1,8 @@
 package io.github.aiglassesrok.nunchi.ui
 
 import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
@@ -59,14 +62,19 @@ import io.github.aiglassesrok.nunchi.ChatMessage
 import io.github.aiglassesrok.nunchi.HubSettings
 import io.github.aiglassesrok.nunchi.MainViewModel
 import io.github.aiglassesrok.nunchi.Role
+import io.github.aiglassesrok.nunchi.drone.LinkState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel, activity: Activity) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
+    val drone by viewModel.drone.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
     var showSettings by remember { mutableStateOf(false) }
+    var showDrone by remember { mutableStateOf(false) }
+    LaunchedEffect(ui.openDrone) { if (ui.openDrone > 0) showDrone = true } // USB 장치를 꽂아 앱이 열렸을 때 등
     val listState = rememberLazyListState()
+    val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let(viewModel::importFile) }
 
     // 답이 스트리밍으로 길어지는 동안에도 마지막 말풍선의 끝이 보이게 따라 내려감
     val last = ui.messages.lastOrNull()
@@ -75,14 +83,20 @@ fun MainScreen(viewModel: MainViewModel, activity: Activity) {
     }
 
     MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) {
+        if (showDrone) {
+            DroneScreen(viewModel) { showDrone = false }
+            return@MaterialTheme
+        }
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
                         Column {
                             Text("Nunchi")
+                            val engine = if (ui.settings.engine == "phone") "📱 폰 RAG" else "허브: ${ui.hubStatus}"
+                            val droneText = if (drone.linkState != LinkState.DISCONNECTED) " · 드론: ${drone.summary()}" else ""
                             Text(
-                                "허브: ${ui.hubStatus} · 안경: ${ui.glassesStatus}" + if (ui.virtualGlasses) " (가상)" else "",
+                                "$engine · 안경: ${ui.glassesStatus}" + (if (ui.virtualGlasses) " (가상)" else "") + droneText,
                                 style = MaterialTheme.typography.labelSmall,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
@@ -90,6 +104,7 @@ fun MainScreen(viewModel: MainViewModel, activity: Activity) {
                         }
                     },
                     actions = {
+                        IconButton(onClick = { showDrone = true }) { Icon(Icons.Filled.FlightTakeoff, contentDescription = "드론 카메라·비행컨트롤러") }
                         TextButton(onClick = viewModel::resetConversation) { Text("초기화") }
                         IconButton(onClick = { showSettings = true }) { Icon(Icons.Filled.Settings, contentDescription = "설정") }
                     },
@@ -147,6 +162,10 @@ fun MainScreen(viewModel: MainViewModel, activity: Activity) {
                 onVirtual = viewModel::setVirtualGlasses,
                 onRegister = { viewModel.registerGlasses(activity) },
                 onUnregister = { viewModel.unregisterGlasses(activity) },
+                kbInfo = ui.kbInfo,
+                gemmaStatus = ui.gemmaStatus,
+                onDownloadKb = viewModel::downloadHubKnowledge,
+                onImport = { importLauncher.launch(arrayOf("*/*")) },
                 onSave = { viewModel.saveSettings(it); showSettings = false },
                 onDismiss = { showSettings = false },
             )
@@ -189,6 +208,10 @@ private fun SettingsDialog(
     onVirtual: (Boolean) -> Unit,
     onRegister: () -> Unit,
     onUnregister: () -> Unit,
+    kbInfo: String,
+    gemmaStatus: String,
+    onDownloadKb: () -> Unit,
+    onImport: () -> Unit,
     onSave: (HubSettings) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -196,6 +219,7 @@ private fun SettingsDialog(
     var token by remember { mutableStateOf(current.token) }
     var glassesMic by remember { mutableStateOf(current.useGlassesMic) }
     var voice by remember { mutableStateOf(current.voice) }
+    var engine by remember { mutableStateOf(current.engine) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -212,6 +236,27 @@ private fun SettingsDialog(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("안경 마이크 사용", Modifier.weight(1f))
                         Switch(checked = glassesMic, onCheckedChange = { glassesMic = it })
+                    }
+                }
+                item { Text("어디서 답을 만들까 (RAG·Gemma 4)", style = MaterialTheme.typography.labelLarge) }
+                items(listOf("hub" to "허브(컴퓨터)에서 — 허브의 Gemma 4", "phone" to "폰에서 — 폰 Gemma 4 + 문서 검색 (인터넷·허브 없이)")) { (key, label) ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = engine == key, onClick = { engine = key })
+                        Text(label)
+                    }
+                }
+                item {
+                    Column(
+                        Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)).padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text("폰 Gemma: $gemmaStatus", style = MaterialTheme.typography.labelMedium)
+                        Text("폰 지식베이스: $kbInfo", style = MaterialTheme.typography.labelMedium)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(onClick = onDownloadKb) { Text("허브 문서 받기") }
+                            OutlinedButton(onClick = onImport) { Text("파일 가져오기") }
+                        }
+                        Text("모델(.litertlm, 예: Gemma 4 E2B)·문서(.md·.txt·kb.json)를 폰으로 가져와요. 모델이 없으면 문서 문장으로 답해요(추출형).", style = MaterialTheme.typography.labelSmall)
                     }
                 }
                 item { Text("답 읽기", style = MaterialTheme.typography.labelLarge) }
@@ -246,7 +291,7 @@ private fun SettingsDialog(
                 item { Spacer(Modifier.size(4.dp)) }
             }
         },
-        confirmButton = { TextButton(onClick = { onSave(HubSettings(url, token, glassesMic, voice)) }) { Text("저장") } },
+        confirmButton = { TextButton(onClick = { onSave(current.copy(hubUrl = url, token = token, useGlassesMic = glassesMic, voice = voice, engine = engine)) }) { Text("저장") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("닫기") } },
     )
 }

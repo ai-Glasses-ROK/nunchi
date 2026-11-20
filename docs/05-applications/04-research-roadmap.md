@@ -36,7 +36,11 @@
 ## 4. 앱
 
 - [x] Android 빌드·에뮬레이터 실행 검증 (가상 안경 사진 → 허브 답변)
-- [ ] Android 실기기·실물 안경 검증, 단독 모드(llama.cpp/LiteRT) 이식
+- [x] Android 단독 모드: 2-gram BM25 Kotlin 이식(허브와 같은 결과) + 폰 Gemma 4(LiteRT-LM) + 추출형
+- [x] 드론(픽스호크) 연결: MAVLink(USB·라디오·블루투스·UDP) + 드론 카메라 → Gemma 4 → 화면, 실기 ArduCopter 3.6 상태 수신 확인 → [실습 8](../04-practice/08-drone.md)
+- [ ] 드론: 5.8GHz OTG 수신기로 VTX 영상 실수신, 텔레메트리 라디오 쌍, 실제 폰 USB OTG·블루투스, 폰 Gemma 모델 실행 지연 측정
+- [ ] 드론: 아이폰용 영상 중계를 허브에 내장(수신기를 허브에 꽂으면 /v1/camera 로)
+- [ ] Android 실기기·실물 안경 검증
 - [ ] DAT Inputs(안경 캡처 버튼) / Voice Invocations로 핸즈프리 호출
 - [ ] Bonjour로 허브 자동 찾기
 - [ ] Meta Ray-Ban Display에 답·근거 표시(MWDATDisplay)

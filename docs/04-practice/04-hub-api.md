@@ -66,6 +66,16 @@ curl -s -X POST http://127.0.0.1:8765/v1/voice -F file=@q.wav -F stream=false
 ### `POST /v1/vision` — 사진 질문 (multipart)
 `image`(JPEG/PNG) + `question`(기본 "지금 보이는 것을 짧게 설명해 줘.") + `use_rag`(기본 true) + 위와 같은 옵션
 
+드론 연결 시 함께 보낼 수 있는 필드 (`/v1/ask`의 JSON, `/v1/voice`·`/v1/vision`의 폼 모두):
+
+| 필드 | 뜻 |
+|---|---|
+| `live_context` | 드론 비행컨트롤러의 실시간 상태 글(최대 4000자). 프롬프트 맨 앞 `[실시간 기체 상태]` 칸에 들어감 |
+| `live_hint` | 검색어에 붙일 상태 키워드(최대 500자, 예: `PreArm: Compass not calibrated`). 음성 질문은 받아쓴 질문이 드론 질문일 때만 붙임 |
+| `image_source` | `/v1/vision`만. `drone`이면 "드론 카메라 장면" 안내문, 기본 `glasses` |
+
+→ [드론 연결](08-drone.md)
+
 ### `POST /v1/stt` · `POST /v1/tts`
 음성 인식만 / 음성 합성만 (`{"text": "…"}` → `audio/wav`)
 

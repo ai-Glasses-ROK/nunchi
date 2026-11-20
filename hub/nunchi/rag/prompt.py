@@ -41,15 +41,30 @@ CAPTION_PROMPT = (
 )
 
 VISION_HINT = "첨부한 사진은 사용자가 지금 안경 카메라로 보고 있는 장면이다. 사진에서 보이는 것을 근거로 답한다."
+DRONE_VISION_HINT = "첨부한 사진은 드론 카메라(FPV)로 지금 보고 있는 장면이다. 사진에서 보이는 것을 근거로 답한다."
+
+LIVE_HINT = (
+    "[실시간 기체 상태]는 지금 연결된 드론 비행컨트롤러(픽스호크)가 보낸 값이다. 배터리·위치·고도·모드·시동·GPS를 물으면 그 값으로 답하고, "
+    "기체 메시지(PreArm 등)가 있으면 [참고 문서]에서 그 메시지의 해결 방법을 찾아 말한다."
+)
 
 
-def system_prompt(style: str = "voice", strict: bool = False, vision: bool = False, from_voice: bool = False) -> str:
+def system_prompt(
+    style: str = "voice",
+    strict: bool = False,
+    vision: bool = False,
+    from_voice: bool = False,
+    live: bool = False,
+    image_source: str = "glasses",
+) -> str:
     base = VOICE_SYSTEM if style == "voice" else TEXT_SYSTEM
     text = base.format(fallback=FALLBACK_STRICT if strict else FALLBACK_SOFT)
     if from_voice:
         text += "\n" + ASR_HINT
+    if live:
+        text += "\n" + LIVE_HINT
     if vision:
-        text += "\n" + VISION_HINT
+        text += "\n" + (DRONE_VISION_HINT if image_source == "drone" else VISION_HINT)
     return text
 
 
@@ -75,19 +90,25 @@ def build_messages(
     strict: bool = False,
     vision: bool = False,
     from_voice: bool = False,
+    live: str | None = None,
+    image_source: str = "glasses",
 ) -> list[dict]:
     """채팅 API에 넣을 messages 배열.
 
     작은 모델일수록 '문서 + 질문'을 마지막 user 메시지 하나에 같이 넣는 편이 잘 따릅니다.
     이전 대화(history)는 문서 없이 질문/답만 넣어 토큰을 아낍니다.
+    live: 폰이 보낸 드론 비행컨트롤러의 실시간 상태(있으면 [실시간 기체 상태] 칸으로 맨 앞에).
     """
-    messages: list[dict] = [{"role": "system", "content": system_prompt(style, strict, vision, from_voice)}]
+    live = (live or "").strip()
+    messages: list[dict] = [
+        {"role": "system", "content": system_prompt(style, strict, vision, from_voice, live=bool(live), image_source=image_source)}
+    ]
     for user, assistant in history or []:
         messages.append({"role": "user", "content": user})
         messages.append({"role": "assistant", "content": assistant})
-    if hits:
-        content = f"[참고 문서]\n{format_context(hits)}\n\n[질문]\n{question}"
-    else:
-        content = f"[참고 문서]\n(관련 문서를 찾지 못함)\n\n[질문]\n{question}"
+    docs = format_context(hits) if hits else "(관련 문서를 찾지 못함)"
+    content = f"[참고 문서]\n{docs}\n\n[질문]\n{question}"
+    if live:
+        content = f"[실시간 기체 상태]\n{live}\n\n{content}"
     messages.append({"role": "user", "content": content})
     return messages

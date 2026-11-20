@@ -1,6 +1,6 @@
 # 실습 6 — Android 앱 (Nunchi)
 
-> 상태: **빌드·실행 검증 완료** — Meta DAT 1.0.1, Gradle 8.14.1 + AGP 8.11.1, JDK 21로 `assembleDebug`·`lintDebug`(오류 0) 통과. Android 15 에뮬레이터에서 가상 안경(MockDeviceKit) 사진 → 허브 비전 답변까지 확인했어요. 실물 안경·실기기는 아직 검증 전입니다.
+> 상태: **빌드·실행 검증 완료** — Meta DAT 1.0.1, Gradle 8.14.1 + AGP 8.11.1, JDK 21로 `assembleDebug`·`lintDebug`(오류 0)·단위 테스트 23개 통과. Android 15 에뮬레이터에서 가상 안경 사진 → 허브 비전 답변, **드론 카메라 → Gemma 4 → 화면**(가상 영상과 맥의 실제 카메라 중계), **폰 단독 RAG**, **실기 픽스호크 상태(맥 UDP 중계)** 까지 확인했어요. 실물 안경·실기기(폰)는 아직 검증 전입니다. 드론은 [실습 8](08-drone.md).
 
 ![에뮬레이터에서 가상 안경 사진에 답하는 Android 앱](../images/android-virtual-glasses-e2.png)
 
@@ -56,7 +56,16 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 | `HubClient.kt` | HttpURLConnection + org.json 으로 SSE·multipart (외부 라이브러리 없음) |
 | `Audio.kt` | 안경 마이크 녹음(블루투스 SCO) · 한국어 TTS · WAV 재생 |
 | `Glasses.kt` | 세션 → 카메라 → 사진(JPEG) · 가상 안경(MockDeviceKit) |
-| `ui/MainScreen.kt` | Compose 화면 |
+| `ui/MainScreen.kt` | Compose 화면 (상단 ✈︎ = 드론 화면) |
+| `ui/DroneScreen.kt` | 드론 카메라 영상 + HUD + Gemma 4 결과, 카메라·비행컨트롤러 연결 |
+| `drone/Mavlink.kt` | 최소 MAVLink v1/v2 파서·인코더 (테스트에서 dronefleet·실기 캡처로 검증) |
+| `drone/DroneTelemetry.kt` | 실시간 상태 → 화면 요약·RAG 보고서·검색 힌트 (PreArm '최근 묶음' 규칙) |
+| `drone/UsbSerial.kt` | USB OTG 시리얼 직접 구현: CDC-ACM(픽스호크)·FTDI·CP210x·CH340(텔레메트리 라디오) |
+| `drone/Links.kt` · `DroneConnection.kt` · `VirtualDrone.kt` | UDP·TCP·블루투스 SPP·가상 드론, 하트비트·요청·끊김 감지 |
+| `camera/DroneCamera.kt` | 드론 카메라: UVC 수신기(UVCAndroid)·MJPEG·가상 영상 → 배선·수신기는 [실습 9](09-fpv-video.md) |
+| `ai/OnDeviceGemma.kt` · `ai/LocalAssistant.kt` | 폰 Gemma 4(LiteRT-LM) · 폰 RAG(캡션→검색→답, 없으면 추출형) |
+| `rag/LocalRag.kt` | 허브와 같은 규칙의 2-gram BM25·마크다운 청커 (허브 결과와 같은지 테스트 — 예제 문서를 고치면 `hub/tests/make_bm25_parity.py`로 기대값을 다시 만듦) |
+| `OnDeviceSpeech.kt` | 폰 단독 모드의 기기 내 받아쓰기 (안드로이드 12+) |
 
 ### 안경 마이크 녹음 방식 (공식 샘플과 동일)
 
@@ -82,6 +91,7 @@ rec.setPreferredDevice(scoDevice)
 
 ## 5. 알려진 한계
 
-- **단독 모드 없음**: 안드로이드에서 폰 안 LLM은 llama.cpp / MediaPipe·LiteRT 같은 엔진을 직접 붙여야 해요 → [폰 단독 모드](07-standalone-phone.md), [연구 로드맵](../05-applications/04-research-roadmap.md)
+- **폰 단독 모드**: 설정 → '폰에서'. 폰 Gemma 4는 `.litertlm` 모델 파일을 넣어야 동작하고(없으면 추출형 답변), 사진 분석은 모델이 없으면 허브로 보냅니다 → [폰 단독 모드](07-standalone-phone.md)
+- APK가 커졌어요(디버그 약 150MB): 폰 LLM 엔진(LiteRT-LM, ARM64만 넣음) + 디버그 빌드의 아이콘 라이브러리. 배포판은 축소(minify)로 줄일 수 있어요.
 - 평문 HTTP 허용(`network_security_config.xml`): 로컬 허브 접속용. 허브를 `--https` 로 띄우면 지워도 됩니다.
 - 사진마다 세션을 새로 만들고 닫아요(가장 단순하고 안정적). 연속 촬영이 많다면 세션을 유지하고 `removeCamera()` 를 쓰는 방식으로 바꿀 수 있어요.
