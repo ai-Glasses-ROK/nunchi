@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- 안경 연결 (Meta DAT) -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -12,6 +13,13 @@
     <!-- 가상 안경에서 폰 카메라를 안경 카메라처럼 쓸 때만 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- 드론: 텔레메트리 라디오·픽스호크·5.8GHz 영상 수신기를 USB OTG로 (없는 폰에도 설치는 되게 required=false) -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" tools:replace="android:required" />
+    <!-- 영상 수신기 라이브러리(UVCAndroid)가 넣는 저장소·포그라운드 권한은 쓰지 않으므로 뺍니다 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
 
     <application
         android:allowBackup="false"
@@ -47,6 +55,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="nunchi" />
             </intent-filter>
+            <!-- 픽스호크·텔레메트리 라디오·영상 수신기를 꽂으면 이 앱으로 열고 USB 권한도 함께 받음 -->
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_device_filter" />
         </activity>
     </application>
 </manifest>

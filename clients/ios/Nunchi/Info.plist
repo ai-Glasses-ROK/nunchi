@@ -75,7 +75,7 @@
 
 	<!-- 로컬 네트워크: 안경 Wi-Fi 카메라 스트리밍 + 같은 와이파이의 허브(컴퓨터) 접속 -->
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>같은 와이파이에 있는 허브 컴퓨터와 안경에 연결하기 위해 로컬 네트워크를 사용합니다. 인터넷은 필요하지 않습니다.</string>
+	<string>같은 와이파이에 있는 허브 컴퓨터·안경·드론(텔레메트리 UDP 14550, 카메라 영상)에 연결하기 위해 로컬 네트워크를 사용합니다. 인터넷은 필요하지 않습니다.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_bonjour._tcp</string>

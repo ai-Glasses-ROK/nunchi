@@ -13,8 +13,12 @@
 		37F5E899CEB58E9A4D77D400 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02A1460EDB1F20DFBB8C282 /* Settings.swift */; };
 		5DB9954AF1932818ACE90265 /* OnDeviceAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F265DA2289B3D0D902D340 /* OnDeviceAssistant.swift */; };
 		7C24C4F0817E3A57A809504B /* NunchiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5C02954917765F290F71A8 /* NunchiApp.swift */; };
+		89623BF485814AD3AF8DF2EC /* DroneCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A244E7820F2C6BDA18CADF /* DroneCamera.swift */; };
+		8A5B45D5B391F88E3B1AACD5 /* DroneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808D367CFD8B9DCCDAA1739A /* DroneView.swift */; };
 		99C40A7E3FE61FEA197ADCFD /* MWDATCore in Frameworks */ = {isa = PBXBuildFile; productRef = B52B214CBFFA868A270B7A9C /* MWDATCore */; };
+		9E2AC3D384D20974C842081F /* Mavlink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D733F4EBEAEB03A78368CA /* Mavlink.swift */; };
 		ACB2E182425FF972B739CC7C /* virtual-glasses-feed.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 42955DB7DB0048269C29D897 /* virtual-glasses-feed.mp4 */; };
+		B1A50EA26DF7100EEBCAD041 /* DroneLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC1B3C5D59DAC671F39C17 /* DroneLink.swift */; };
 		B52C0D895D6A7AFBF1E2BF99 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D63B44C7E9A7744B07768C0 /* AppModel.swift */; };
 		D14AB9B0B2DE000A935537B5 /* GlassesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB905D7EF4CB44AF77D24552 /* GlassesController.swift */; };
 		D49E85FA9FEE897EAE834A50 /* SpeechOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E938905295E29F48D47A1EF /* SpeechOutput.swift */; };
@@ -22,25 +26,31 @@
 		D572D6F0DE0171EF3B1483A8 /* MWDATCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4ECE050E6C64807F047BA7 /* MWDATCamera */; };
 		E302C44585484D1AD234E067 /* VoiceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13DB205308A3C3917CA2D29 /* VoiceRecorder.swift */; };
 		E9C956EB00B24808C4B5FD60 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA9ACBC9391F5CBFB2E4522 /* SettingsView.swift */; };
+		EB4D404301C940F764D9FBFE /* virtual-drone-feed.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = E1C550186B7C73185FF117F7 /* virtual-drone-feed.mp4 */; };
 		F29E40E1C7528AF2FF769BA7 /* HubClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FD7C29CEECE588D248ABC5 /* HubClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		19513EB4A03CB29230CCA3B9 /* Nunchi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Nunchi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D63B44C7E9A7744B07768C0 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		28A244E7820F2C6BDA18CADF /* DroneCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneCamera.swift; sourceTree = "<group>"; };
 		31BF7445EF23504F0765F159 /* LocalKnowledgeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalKnowledgeBase.swift; sourceTree = "<group>"; };
 		336226D6C378A9078CD461F6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		42955DB7DB0048269C29D897 /* virtual-glasses-feed.mp4 */ = {isa = PBXFileReference; path = "virtual-glasses-feed.mp4"; sourceTree = "<group>"; };
 		505CEFB18EE88F622C7B99B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		56FD7C29CEECE588D248ABC5 /* HubClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubClient.swift; sourceTree = "<group>"; };
 		5E938905295E29F48D47A1EF /* SpeechOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechOutput.swift; sourceTree = "<group>"; };
+		6FEC1B3C5D59DAC671F39C17 /* DroneLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneLink.swift; sourceTree = "<group>"; };
+		808D367CFD8B9DCCDAA1739A /* DroneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneView.swift; sourceTree = "<group>"; };
 		81F265DA2289B3D0D902D340 /* OnDeviceAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAssistant.swift; sourceTree = "<group>"; };
 		9D5C02954917765F290F71A8 /* NunchiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NunchiApp.swift; sourceTree = "<group>"; };
+		A0D733F4EBEAEB03A78368CA /* Mavlink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mavlink.swift; sourceTree = "<group>"; };
 		ABA9ACBC9391F5CBFB2E4522 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB72E9893138C8387C1C0973 /* VirtualGlasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualGlasses.swift; sourceTree = "<group>"; };
 		D02A1460EDB1F20DFBB8C282 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		DB905D7EF4CB44AF77D24552 /* GlassesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassesController.swift; sourceTree = "<group>"; };
 		E13DB205308A3C3917CA2D29 /* VoiceRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecorder.swift; sourceTree = "<group>"; };
+		E1C550186B7C73185FF117F7 /* virtual-drone-feed.mp4 */ = {isa = PBXFileReference; path = "virtual-drone-feed.mp4"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +67,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00ED6BFC8EF1D9B9C42F0166 /* Drone */ = {
+			isa = PBXGroup;
+			children = (
+				28A244E7820F2C6BDA18CADF /* DroneCamera.swift */,
+				6FEC1B3C5D59DAC671F39C17 /* DroneLink.swift */,
+				A0D733F4EBEAEB03A78368CA /* Mavlink.swift */,
+			);
+			path = Drone;
+			sourceTree = "<group>";
+		};
 		16D876845F098127C751252D = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +88,7 @@
 		233EA01CD516CC766C77F5C8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E1C550186B7C73185FF117F7 /* virtual-drone-feed.mp4 */,
 				42955DB7DB0048269C29D897 /* virtual-glasses-feed.mp4 */,
 			);
 			path = Resources;
@@ -107,6 +128,7 @@
 				9D5C02954917765F290F71A8 /* NunchiApp.swift */,
 				D02A1460EDB1F20DFBB8C282 /* Settings.swift */,
 				DFA6D8E0D87F7A6D70FF66B8 /* Audio */,
+				00ED6BFC8EF1D9B9C42F0166 /* Drone */,
 				4E3FE766B7B616D141DE30C1 /* Glasses */,
 				2D1416040CF4426E0C7E92A9 /* Hub */,
 				2A6E49E6990C82D0E8581A34 /* OnDevice */,
@@ -120,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				336226D6C378A9078CD461F6 /* ContentView.swift */,
+				808D367CFD8B9DCCDAA1739A /* DroneView.swift */,
 				ABA9ACBC9391F5CBFB2E4522 /* SettingsView.swift */,
 			);
 			path = Views;
@@ -208,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB4D404301C940F764D9FBFE /* virtual-drone-feed.mp4 in Resources */,
 				ACB2E182425FF972B739CC7C /* virtual-glasses-feed.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,9 +245,13 @@
 			files = (
 				B52C0D895D6A7AFBF1E2BF99 /* AppModel.swift in Sources */,
 				246F5B1B462CB2EA9E731811 /* ContentView.swift in Sources */,
+				89623BF485814AD3AF8DF2EC /* DroneCamera.swift in Sources */,
+				B1A50EA26DF7100EEBCAD041 /* DroneLink.swift in Sources */,
+				8A5B45D5B391F88E3B1AACD5 /* DroneView.swift in Sources */,
 				D14AB9B0B2DE000A935537B5 /* GlassesController.swift in Sources */,
 				F29E40E1C7528AF2FF769BA7 /* HubClient.swift in Sources */,
 				30EB9C6BC9EBA5DD728EED46 /* LocalKnowledgeBase.swift in Sources */,
+				9E2AC3D384D20974C842081F /* Mavlink.swift in Sources */,
 				7C24C4F0817E3A57A809504B /* NunchiApp.swift in Sources */,
 				5DB9954AF1932818ACE90265 /* OnDeviceAssistant.swift in Sources */,
 				37F5E899CEB58E9A4D77D400 /* Settings.swift in Sources */,

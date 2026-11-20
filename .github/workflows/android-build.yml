@@ -1,11 +1,12 @@
-# Android 앱 빌드·린트 (GitHub 우분투 러너에는 Android SDK가 들어 있음)
+# Android 앱 빌드·린트·단위 테스트 (GitHub 우분투 러너에는 Android SDK가 들어 있음)
+# examples/ 의 문서가 APK에 들어가고(폰 단독 RAG) 테스트도 그 문서로 허브와 같은 검색 결과인지 확인하므로 examples/ 변경에도 돕니다.
 name: android-build
 
 on:
   push:
-    paths: ["clients/android/**", ".github/workflows/android-build.yml"]
+    paths: ["clients/android/**", "examples/**", ".github/workflows/android-build.yml"]
   pull_request:
-    paths: ["clients/android/**", ".github/workflows/android-build.yml"]
+    paths: ["clients/android/**", "examples/**", ".github/workflows/android-build.yml"]
 
 permissions:
   contents: read
@@ -23,4 +24,4 @@ jobs:
           distribution: temurin
           java-version: "21"
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew --no-daemon assembleDebug lintDebug
+      - run: ./gradlew --no-daemon assembleDebug lintDebug testDebugUnitTest

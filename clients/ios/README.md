@@ -24,3 +24,8 @@ Signing & Capabilities에서 **Team**과 **Bundle Identifier**(`com.<내이름>.
 | `project.yml` | XcodeGen 설정 (`xcodegen generate` 로 프로젝트 재생성) |
 
 Meta DAT를 쓰면 [Meta Wearables Developer Terms](https://wearables.developer.meta.com/terms)에 동의하는 것입니다.
+
+
+## 드론 화면 (✈︎)
+
+드론 카메라(네트워크 MJPEG·가상) → 허브 Gemma 4 → 영상 위에 결과, 비행컨트롤러 상태는 와이파이 UDP 14550 (`Drone/`, `Views/DroneView.swift`). 아이폰은 USB 시리얼·USB 영상 수신기를 앱에서 쓸 수 없어서, 픽스호크·수신기를 컴퓨터에 꽂고 중계합니다(`scripts/mavlink_bridge.py`·`scripts/video_relay.py`) → [실습 8](../../docs/04-practice/08-drone.md) · [실습 9](../../docs/04-practice/09-fpv-video.md). 시뮬레이터 자동 점검: 실행 인자 `-NunchiSelfTest drone` (드론 화면에 저장된 카메라 — 가상 또는 MJPEG 주소 — 로 분석).

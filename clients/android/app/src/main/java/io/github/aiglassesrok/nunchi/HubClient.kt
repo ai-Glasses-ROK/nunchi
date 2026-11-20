@@ -14,6 +14,7 @@ import org.json.JSONObject
 /** 허브(nunchi serve)가 SSE로 보내는 이벤트 */
 sealed interface HubEvent {
     data class Transcript(val text: String) : HubEvent
+    data class Caption(val text: String) : HubEvent
     data class Retrieval(val sources: List<String>) : HubEvent
     data class Delta(val text: String) : HubEvent
     data class Sentence(val text: String) : HubEvent
@@ -42,34 +43,58 @@ class HubClient(baseUrl: String, private val token: String) {
         "${models?.optString("llm") ?: "?"} · 문서 ${index?.optInt("documents") ?: 0}개"
     }
 
-    suspend fun ask(question: String, sessionId: String, speak: Boolean, onEvent: suspend (HubEvent) -> Unit) {
+    /**
+     * live = 드론 비행컨트롤러의 실시간 상태. context는 프롬프트의 [실시간 기체 상태] 칸에,
+     * hint(PreArm 메시지 등)는 검색어에 붙습니다. 옛 허브는 모르는 필드를 무시하므로 함께 보내도 안전합니다.
+     */
+    data class Live(val context: String = "", val hint: String = "")
+
+    suspend fun ask(question: String, sessionId: String, speak: Boolean, live: Live = Live(), onEvent: suspend (HubEvent) -> Unit) {
         val body = JSONObject()
             .put("question", question)
             .put("session_id", sessionId)
             .put("stream", true)
             .put("speak", speak)
-            .toString()
-            .toByteArray()
-        stream("v1/ask", "application/json", body, onEvent)
+        if (live.context.isNotBlank()) body.put("live_context", live.context.take(4000))
+        if (live.hint.isNotBlank()) body.put("live_hint", live.hint.take(500))
+        stream("v1/ask", "application/json", body.toString().toByteArray(), onEvent)
     }
 
-    suspend fun voice(wav: ByteArray, sessionId: String, speak: Boolean, onEvent: suspend (HubEvent) -> Unit) {
+    suspend fun voice(wav: ByteArray, sessionId: String, speak: Boolean, live: Live = Live(), onEvent: suspend (HubEvent) -> Unit) {
         val form = Multipart()
         form.file("file", "voice.wav", "audio/wav", wav)
         form.field("session_id", sessionId)
         form.field("stream", "true")
         form.field("speak", speak.toString())
+        form.live(live)
         stream("v1/voice", form.contentType, form.bytes(), onEvent)
     }
 
-    suspend fun vision(jpeg: ByteArray, question: String, sessionId: String, speak: Boolean, onEvent: suspend (HubEvent) -> Unit) {
+    suspend fun vision(
+        jpeg: ByteArray,
+        question: String,
+        sessionId: String,
+        speak: Boolean,
+        live: Live = Live(),
+        source: String = "glasses",
+        onEvent: suspend (HubEvent) -> Unit,
+    ) {
         val form = Multipart()
         form.file("image", "photo.jpg", "image/jpeg", jpeg)
         form.field("question", question)
         form.field("session_id", sessionId)
         form.field("stream", "true")
         form.field("speak", speak.toString())
+        form.field("image_source", source) // glasses | drone (허브가 '안경 카메라' / '드론 카메라' 안내문을 고름)
+        form.live(live)
         stream("v1/vision", form.contentType, form.bytes(), onEvent)
+    }
+
+    /** 폰 단독 모드용 지식베이스 받기 (허브의 /v1/kb/export, nunchi-kb 형식 JSON 문자열) */
+    suspend fun exportKnowledge(): String = withContext(Dispatchers.IO) {
+        val text = readBody(open("v1/kb/export", "GET", timeoutMs = 30_000))
+        require(JSONObject(text).optString("format") == "nunchi-kb") { "nunchi 지식베이스 형식이 아니에요" }
+        text
     }
 
     // ---------------------------------------------------------------- 내부
@@ -123,6 +148,7 @@ class HubClient(baseUrl: String, private val token: String) {
         val o = runCatching { JSONObject(data) }.getOrNull() ?: return null
         return when (type) {
             "transcript" -> HubEvent.Transcript(o.optString("text"))
+            "caption" -> HubEvent.Caption(o.optString("text"))
             "retrieval" -> {
                 val arr = o.optJSONArray("sources") ?: JSONArray()
                 HubEvent.Retrieval((0 until arr.length()).map { i ->
@@ -157,6 +183,11 @@ class HubClient(baseUrl: String, private val token: String) {
             out.write("--$boundary\r\nContent-Disposition: form-data; name=\"$name\"; filename=\"$filename\"\r\nContent-Type: $mime\r\n\r\n".toByteArray())
             out.write(data)
             out.write("\r\n".toByteArray())
+        }
+
+        fun live(live: Live) {
+            if (live.context.isNotBlank()) field("live_context", live.context.take(4000))
+            if (live.hint.isNotBlank()) field("live_hint", live.hint.take(500))
         }
 
         fun bytes(): ByteArray {

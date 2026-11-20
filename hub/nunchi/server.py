@@ -39,6 +39,9 @@ class AskBody(BaseModel):
     use_rag: bool = True
     style: str | None = None  # voice | text
     top_k: int | None = Field(default=None, ge=1, le=12)
+    # 드론 비행컨트롤러의 실시간 상태 (Nunchi 앱이 MAVLink로 받아 보냄). context는 프롬프트에, hint는 검색어에
+    live_context: str | None = Field(default=None, max_length=4000)
+    live_hint: str | None = Field(default=None, max_length=500)
 
 
 class TTSBody(BaseModel):
@@ -128,6 +131,8 @@ def create_app(hub: Hub | None = None, settings: Settings | None = None) -> Fast
             style=body.style,
             top_k=body.top_k,
             speak=body.speak,
+            live_context=body.live_context,
+            live_hint=body.live_hint,
         )
         return _respond(events, body.stream)
 
@@ -139,13 +144,17 @@ def create_app(hub: Hub | None = None, settings: Settings | None = None) -> Fast
         speak: str | None = Form(default=None),
         style: str | None = Form(default=None),
         top_k: int | None = Form(default=None),
+        live_context: str | None = Form(default=None, max_length=4000),
+        live_hint: str | None = Form(default=None, max_length=500),
     ):
         data = file.file.read(MAX_AUDIO + 1)
         if len(data) > MAX_AUDIO:
             raise HTTPException(413, "오디오가 너무 커요 (최대 25MB)")
         if not data:
             raise HTTPException(400, "오디오가 비어 있어요")
-        events = hub.voice_events(data, session_id=session_id, style=style, top_k=top_k, speak=_bool(speak))
+        events = hub.voice_events(
+            data, session_id=session_id, style=style, top_k=top_k, speak=_bool(speak), live_context=live_context, live_hint=live_hint
+        )
         return _respond(events, _bool(stream))
 
     @app.post("/v1/vision", dependencies=deps)
@@ -157,6 +166,9 @@ def create_app(hub: Hub | None = None, settings: Settings | None = None) -> Fast
         speak: str | None = Form(default=None),
         use_rag: str | None = Form(default=None),
         style: str | None = Form(default=None),
+        image_source: str | None = Form(default=None, description="glasses(안경 카메라, 기본) | drone(드론 카메라)"),
+        live_context: str | None = Form(default=None, max_length=4000),
+        live_hint: str | None = Form(default=None, max_length=500),
     ):
         data = image.file.read(MAX_IMAGE + 1)
         if len(data) > MAX_IMAGE:
@@ -170,6 +182,9 @@ def create_app(hub: Hub | None = None, settings: Settings | None = None) -> Fast
             use_rag=_bool(use_rag, default=True),
             style=style,
             speak=_bool(speak),
+            live_context=live_context,
+            live_hint=live_hint,
+            image_source="drone" if (image_source or "").strip().lower() == "drone" else "glasses",
         )
         return _respond(events, _bool(stream))
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 꽂으면 Nunchi로 열 USB 장치. 숫자는 USB 제조사 번호(VID)를 10진수로 적은 것 -->
+<resources>
+    <!-- 비행컨트롤러 본체 USB: 3DR 픽스호크(26AC), ArduPilot(1209), CubePilot(2DAE), Holybro(3162), STM32 가상 COM(0483) -->
+    <usb-device vendor-id="9900" />
+    <usb-device vendor-id="4617" />
+    <usb-device vendor-id="11694" />
+    <usb-device vendor-id="12642" />
+    <usb-device vendor-id="1155" />
+    <!-- 텔레메트리 라디오(지상용)·USB 시리얼: FTDI(0403), Silicon Labs CP210x(10C4), WCH CH340(1A86) -->
+    <usb-device vendor-id="1027" />
+    <usb-device vendor-id="4292" />
+    <usb-device vendor-id="6790" />
+    <!-- 5.8GHz FPV 영상 수신기(OTG)·USB 캡처: 영상(UVC) 장치 클래스 14 -->
+    <usb-device class="14" />
+</resources>

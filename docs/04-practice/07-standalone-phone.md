@@ -9,7 +9,7 @@
 | **Nunchi iOS 단독 모드** | iPhone (iOS 26+ & Apple Intelligence 기기에서 LLM) | Apple Foundation Models | 2-gram BM25 (kb.json) | 이 레포에 포함, 시뮬레이터 빌드 검증 |
 | Nunchi iOS (LLM 없는 기기) | iOS 17.2+ | 없음 → **추출형 답변**(문서 문장 그대로) | 2-gram BM25 | 포함 |
 | Avenkin (구 OpenGlasses) | iPhone iOS 26+ | MLX / llama.cpp (GGUF) | 앱 자체 기능 | 외부 앱, BSL 1.1 라이선스(비상업 사용 허용) |
-| 안드로이드 직접 통합 | 램 8GB+ | llama.cpp / MediaPipe·LiteRT | 2-gram BM25 이식 | 연구 과제 |
+| **Nunchi Android 단독 모드** | Android 12+ (LLM은 램 8GB+ 권장) | 폰 Gemma 4 (LiteRT-LM, `.litertlm`) — 없으면 추출형 | 2-gram BM25 (허브와 같은 결과를 테스트로 확인) + 드론 실시간 상태 | 이 레포에 포함, 에뮬레이터에서 추출형 확인 (폰 모델 실행은 미검증) |
 
 ## 2. Nunchi iOS 단독 모드 쓰기
 
@@ -49,7 +49,17 @@ nunchi export-mobile -o kb.json
 | 배터리 | 폰은 중계만 → 오래감 | 빨리 닳음 |
 | 지연 | 실측 중앙값은 [평가](../05-applications/03-evaluation.md) | 기기마다 다름 (연구 과제) |
 
-## 5. 안드로이드에서 하려면 (가이드)
+## 5. Nunchi Android 단독 모드
+
+1. 설정 → 어디서 답을 만들까 → **폰에서**
+2. (선택) 폰 Gemma 4: `.litertlm` 모델(예: Gemma 4 E2B)을 `/sdcard/Android/data/io.github.aiglassesrok.nunchi/files/models/`에 넣기 — `adb push` 또는 설정 → 파일 가져오기
+3. 문서: 앱에 예제 문서 4개(발전기·캠핑장·허브 사용설명서·드론 점검 안내)가 들어 있고, 설정 → **허브 문서 받기**(kb.json)나 **파일 가져오기**(.md·.txt)로 더할 수 있어요.
+
+동작: 받아쓰기는 안드로이드 '기기 내' 인식기, 검색은 허브와 같은 2-gram BM25, 답은 폰 Gemma 4(사진이 있으면 캡션→검색→답) 또는 추출형. 드론이 연결돼 있으면 [실시간 상태](08-drone.md#6-상태검색-status-then-retrieve)를 함께 씁니다.
+
+![폰 단독 RAG — 드론 상태와 점검 문서로 답함](../images/android-drone-phone-rag.png)
+
+## 6. 안드로이드에서 직접 하려면 (참고)
 
 1. 엔진 고르기: llama.cpp(GGUF, JNI) 또는 Google AI Edge(MediaPipe/LiteRT LLM)
 2. Nunchi 허브의 `nunchi/rag/bm25.py` 를 Kotlin으로 이식 (iOS `LocalKnowledgeBase.swift` 가 좋은 참고 — 60줄 남짓)
