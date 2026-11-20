@@ -2,6 +2,8 @@
 
 안경은 가상으로 두고, **실제 드론 키트**(B-CUBE 픽스호크 2.4.8)를 Nunchi 앱에 붙입니다. 앱은 비행컨트롤러의 상태(MAVLink)와 드론 카메라 영상을 받아, **Gemma 4**가 영상을 보고 내 문서(점검 안내)를 찾아 답한 결과를 영상 위에 띄웁니다. RAG는 **허브(컴퓨터)** 에서도, **폰 안**에서도 돌 수 있습니다.
 
+> 이 문서는 따라 하는 실습이에요. 원리·실험·결과는 [드론 실험 문서](../07-drone/01-overview.md)(8편)에 자세히 정리했어요.
+
 > **상태 (2026-11-20)**
 > - **실기 확인**: 픽스호크 2.4.8(PX4v3) + **ArduCopter V3.6.12**를 맥 USB에 꽂아 MAVLink를 읽음 — 35초 동안 프레임 981개, **CRC 오류 0**. 맥이 UDP로 중계해 **Android 앱(에뮬레이터)·iOS 앱(시뮬레이터)** 에 실시간 상태·PreArm 경고가 뜨고, 허브 Gemma 4가 그 상태로 "왜 시동이 안 걸려?"에 답하는 것까지 확인.
 > - **실제 카메라 확인**: 맥에 연결된 실제 카메라를 `scripts/video_relay.py`로 중계 → **Android·iOS 앱** → 허브 Gemma 4 → 영상 위 결과(Android 전체 2.3초 · iOS 3.9초), 실기 픽스호크 HUD와 함께.
@@ -10,6 +12,19 @@
 > - **아직 못 한 것**: 5.8GHz 영상 실수신(수신기가 없어서 — 연결 방법은 [실습 9](09-fpv-video.md)), 텔레메트리 라디오 V5 쌍, 실제 폰의 USB OTG 직결·블루투스 모듈, 폰 안 Gemma 모델(.litertlm) 실행.
 
 ![가상 드론 카메라 + 실시간 상태 + 허브 Gemma 4 결과](../images/android-drone-gemma4.png)
+
+## 목차
+
+- [1. 이 키트의 부품과 역할](#1-이-키트의-부품과-역할)
+- [2. 큰 그림](#2-큰-그림)
+- [3. 비행컨트롤러 연결 (상태 받기)](#3-비행컨트롤러-연결-상태-받기)
+- [4. 드론 카메라 영상 받기 (VTX → 앱)](#4-드론-카메라-영상-받기-vtx--앱)
+- [5. Gemma 4로 분석 → 화면](#5-gemma-4로-분석--화면)
+- [6. 상태→검색 (status-then-retrieve)](#6-상태검색-status-then-retrieve)
+- [7. 실측](#7-실측)
+- [8. 실물 없이 / 실물 + 컴퓨터로 시험하기](#8-실물-없이--실물--컴퓨터로-시험하기)
+- [9. 만들며 알게 된 것](#9-만들며-알게-된-것)
+- [10. 안전](#10-안전)
 
 ## 1. 이 키트의 부품과 역할
 
@@ -143,6 +158,12 @@ python3 scripts/video_relay.py --device 장치번호 --host 0.0.0.0
 
 ```bash
 adb shell am start -n io.github.aiglassesrok.nunchi/.MainActivity --es nunchi_demo drone
+```
+
+드론 화면에서 질문까지 자동으로 (디버그 빌드, 카메라 첫 화면을 기다렸다가 분석):
+
+```bash
+adb shell "am start -n io.github.aiglassesrok.nunchi/.MainActivity --es nunchi_link udp --es nunchi_camera virtual --es nunchi_drone_ask '왜 시동이 안 걸려?'"
 ```
 
 실기 픽스호크를 맥에 꽂고 Android 에뮬레이터에서 (앱: 드론 화면 → Wi-Fi UDP → 연결):

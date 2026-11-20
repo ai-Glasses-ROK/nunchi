@@ -84,6 +84,8 @@ class MainActivity : ComponentActivity() {
             intent.getStringExtra("nunchi_link")?.let { viewModel.connectDrone(it); viewModel.requestDroneScreen() } // usb·bt·udp·tcp·virtual
             intent.getStringExtra("nunchi_camera")?.let { viewModel.startCamera(it) } // usb·mjpeg·virtual
             intent.getStringExtra("nunchi_ask")?.let(viewModel::ask)
+            // 드론 화면에서 이 질문으로 분석 (카메라 첫 화면을 기다렸다가). 예: --es nunchi_drone_ask "왜 시동이 안 걸려?"
+            intent.getStringExtra("nunchi_drone_ask")?.let { viewModel.requestDroneScreen(); viewModel.analyzeWhenFrameReady(it) }
         }
     }
 

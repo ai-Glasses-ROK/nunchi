@@ -43,10 +43,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
 
 enum class Role { USER, ASSISTANT, NOTICE }
@@ -387,6 +389,14 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun stopCamera() {
         setAutoAnalyze(false)
         camera.stop()
+    }
+
+    /** 디버그 자동 시험용: 카메라 첫 화면이 오면(최대 15초) 그 질문으로 분석 */
+    fun analyzeWhenFrameReady(question: String) {
+        viewModelScope.launch {
+            withTimeoutOrNull(15_000) { cameraFrame.first { it != null } } ?: return@launch
+            analyzeDroneFrame(question)
+        }
     }
 
     /** 지금 드론 카메라 화면을 Gemma 4로 분석해서 화면에 띄움 (폰 모델이 있으면 폰, 없으면 허브) */

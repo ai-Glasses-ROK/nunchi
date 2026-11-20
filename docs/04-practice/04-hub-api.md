@@ -3,6 +3,21 @@
 기본 주소 `http://<허브>:8765`. 토큰을 정했다면 모든 `/v1/*` 요청에 헤더 `Authorization: Bearer <토큰>` (또는 `X-Hub-Token: <토큰>`).
 자동 생성 문서: `http://<허브>:8765/docs` (Swagger UI)
 
+## 목차
+
+- [응답 방식 두 가지](#응답-방식-두-가지)
+  - [SSE 이벤트](#sse-이벤트)
+- [엔드포인트](#엔드포인트)
+  - [`GET /v1/health`](#get-v1health)
+  - [`POST /v1/ask` — 글자 질문 (JSON)](#post-v1ask--글자-질문-json)
+  - [`POST /v1/voice` — 음성 질문 (multipart)](#post-v1voice--음성-질문-multipart)
+  - [`POST /v1/vision` — 사진 질문 (multipart)](#post-v1vision--사진-질문-multipart)
+  - [`POST /v1/stt` · `POST /v1/tts`](#post-v1stt--post-v1tts)
+  - [지식베이스](#지식베이스)
+- [다른 언어에서 SSE 읽기](#다른-언어에서-sse-읽기)
+  - [파이썬](#파이썬)
+  - [Swift / Kotlin](#swift--kotlin)
+
 ## 응답 방식 두 가지
 
 | 방식 | 요청 | 응답 |

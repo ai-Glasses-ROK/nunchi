@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 392" width="960" height="392" role="img" aria-labelledby="title desc">
+  <title id="title">드론 질문: 기체 상태 → 검색 → 답</title>
+  <desc id="desc">픽스호크가 MAVLink로 보낸 실시간 상태와 "왜 시동이 안 걸려?" 질문이 들어오면, 앱이 지금 시동을 막는 PreArm 메시지 묶음을 골라 검색어에 붙이고, 점검 문서에서 조종기·가속도계·나침반 보정 절을 찾은 뒤, 실시간 상태와 찾은 문서로 Gemma 4가 답을 만들어 드론 영상 위에 띄웁니다. 상태 없이 검색하면 질문에 검색어가 거의 없어 PreArm 소개 문단만 찾습니다.</desc>
+  <style>
+    .bg { fill: #ffffff; stroke: #d0d7de; }
+    .card { fill: #f6f8fa; stroke: #d0d7de; }
+    .hl { fill: #ddf4ff; stroke: #54aeff; }
+    .ok { fill: #dafbe1; stroke: #4ac26b; }
+    .bad { fill: #fff5f5; stroke: #ff8182; }
+    .h { fill: #1f2328; font: 600 15px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .title { fill: #1f2328; font: 700 18px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .b { fill: #1f2328; font: 13.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .bb { fill: #1f2328; font: 600 13.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .s { fill: #59636e; font: 12.5px -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+    .m { fill: #0550ae; font: 11px ui-monospace, SFMono-Regular, Menlo, "D2Coding", monospace; }
+    .arrow { stroke: #8c959f; stroke-width: 2; fill: none; }
+    .ah { fill: #8c959f; }
+    .x { stroke: #cf222e; stroke-width: 2.5; stroke-linecap: round; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; stroke: #30363d; }
+      .card { fill: #161b22; stroke: #30363d; }
+      .hl { fill: #0c2d6b; stroke: #1f6feb; }
+      .ok { fill: #0f2e1a; stroke: #2ea043; }
+      .bad { fill: #2d1517; stroke: #da3633; }
+      .h, .title, .b, .bb { fill: #e6edf3; }
+      .s { fill: #9198a1; }
+      .m { fill: #79c0ff; }
+      .arrow { stroke: #6e7681; }
+      .ah { fill: #6e7681; }
+      .x { stroke: #ff7b72; }
+    }
+  </style>
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" class="ah"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="959" height="391" rx="12"/>
+  <text class="title" x="24" y="38">드론 질문은 기체 상태를 붙여 검색합니다</text>
+  <text class="s" x="24" y="60">status-then-retrieve · 실측: 실기 픽스호크 2.4.8 + ArduCopter 3.6.12, gemma4:e4b-mlx</text>
+
+  <!-- 픽스호크 -->
+  <rect class="card" x="24" y="84" width="190" height="180" rx="10"/>
+  <text class="h" x="40" y="110">픽스호크 (MAVLink)</text>
+  <rect x="40" y="124" width="158" height="72" rx="6" fill="#24292f"/>
+  <text x="50" y="145" fill="#d0d7de" font-family="ui-monospace, Menlo, monospace" font-size="11">STABILIZE DISARMED</text>
+  <text x="50" y="165" fill="#f5c518" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700">⚠ PreArm 4개</text>
+  <text x="50" y="185" fill="#8c959f" font-family="ui-monospace, Menlo, monospace" font-size="10">ArduCopter 3.6.12</text>
+  <rect class="hl" x="40" y="210" width="158" height="38" rx="19"/>
+  <text class="bb" x="119" y="234" text-anchor="middle">“왜 시동이 안 걸려?”</text>
+
+  <path class="arrow" d="M216,174 L234,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ① 상태 -->
+  <rect class="card" x="238" y="84" width="200" height="180" rx="10"/>
+  <text class="h" x="254" y="110">① 지금의 경고 고르기</text>
+  <text class="s" x="254" y="130">30초마다 오는 PreArm 묶음 중</text>
+  <text class="s" x="254" y="147">가장 최근 묶음(1.5초 안)만</text>
+  <rect class="hl" x="254" y="162" width="168" height="86" rx="6"/>
+  <text class="m" x="263" y="182">3D Accel calibration</text>
+  <text class="m" x="263" y="200">Compass not calibrated</text>
+  <text class="m" x="263" y="218">RC Roll not configured</text>
+  <text class="m" x="263" y="236">Throttle below Failsafe</text>
+
+  <path class="arrow" d="M440,174 L458,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ② 검색 -->
+  <rect class="card" x="462" y="84" width="200" height="180" rx="10"/>
+  <text class="h" x="478" y="110">② 검색</text>
+  <text class="s" x="478" y="130">질문 + 경고 문구로</text>
+  <text class="s" x="478" y="147">2-gram BM25 (허브 = 폰)</text>
+  <rect class="ok" x="478" y="162" width="168" height="86" rx="6"/>
+  <text class="s" x="490" y="182">1~3위 조각</text>
+  <text class="bb" x="490" y="202">조종기 · 가속도계 ·</text>
+  <text class="bb" x="490" y="221">나침반 보정 절</text>
+  <text class="s" x="490" y="240">각 경고의 해결 방법</text>
+
+  <path class="arrow" d="M664,174 L682,174" marker-end="url(#arrowhead)"/>
+
+  <!-- ③ 답 -->
+  <rect class="card" x="686" y="84" width="250" height="180" rx="10"/>
+  <text class="h" x="702" y="110">③ 답</text>
+  <text class="s" x="702" y="130">실시간 상태 + 찾은 문서 → Gemma 4</text>
+  <rect class="hl" x="702" y="142" width="218" height="94" rx="8"/>
+  <text class="b" x="714" y="164">“조종기·가속도계·나침반</text>
+  <text class="b" x="714" y="183">점검이 남았어요. 조종기,</text>
+  <text class="b" x="714" y="202">가속도계, 나침반 순서로</text>
+  <text class="b" x="714" y="221">보정해 주세요.”</text>
+  <text class="s" x="702" y="254">→ 드론 영상 위에 겹쳐 표시</text>
+
+  <!-- 상태 없이 -->
+  <rect class="bad" x="24" y="284" width="912" height="64" rx="10"/>
+  <path class="x" d="M44,302 L58,316 M58,302 L44,316"/>
+  <text class="bb" x="70" y="314">상태 없이 검색하면</text>
+  <text class="b" x="200" y="314">“왜 시동이 안 걸려?”에는 검색어가 거의 없어, PreArm 소개 문단만 찾습니다. 무엇이 문제인지 모릅니다.</text>
+  <text class="s" x="70" y="336">경고를 붙이면 그 해결 절이 1~3위로 올라옵니다. 드론을 묻는 질문에만 붙이고, GPS 미수신은 넣지 않습니다(STABILIZE는 GPS 없이 시동).</text>
+
+  <text class="s" x="24" y="374">구현: Android drone/DroneTelemetry.kt (retrievalHint · currentPrearm) · iOS Drone/DroneLink.swift · 허브 hub/nunchi/pipeline.py (live_hint)</text>
+</svg>
